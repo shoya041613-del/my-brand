@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>株式会社TAMOTO | 不可能を可能に</title>
+  <title>株式会社TAMOTO | AIチャットボット開発</title>
   <style>
     /* ===== リセット & 基本設定 ===== */
     *, *::before, *::after {
@@ -1051,10 +1051,18 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
     }
 
+    /* プレミアムカードのチェックアイコンを水色に */
+    .pricing-card[style*="linear-gradient"] .pricing-card__features li::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+    }
+
     /* CTAボタン（おすすめ以外はアウトライン） */
     .pricing-card .btn {
+      display: flex;
       width: 100%;
+      box-sizing: border-box;
       justify-content: center;
+      align-items: center;
     }
 
     /* レスポンシブ：タブレットで2列 */
@@ -1124,9 +1132,225 @@
       letter-spacing: 0.04em;
     }
 
+    /* ===== プレミアムプランセクション ===== */
+    .premium {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, #1e3566 50%, #0f172a 100%);
+      color: var(--white);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 背景の装飾 */
+    .premium::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
+      top: -200px;
+      right: -100px;
+      pointer-events: none;
+    }
+
+    .premium::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(30,64,175,.12) 0%, transparent 70%);
+      bottom: -100px;
+      left: -80px;
+      pointer-events: none;
+    }
+
+    .premium__inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .premium .section-label {
+      color: #93c5fd;
+    }
+
+    .premium .section-title {
+      color: var(--white);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+    }
+
+    .premium__sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,.75);
+      line-height: 1.8;
+      margin-top: 16px;
+      margin-bottom: 40px;
+    }
+
+    /* プレミアム特典リスト */
+    .premium__features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .premium__features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,.9);
+    }
+
+    .premium__features li::before {
+      content: '';
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .premium__actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* 右側：プランカード */
+    .premium__card {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      backdrop-filter: blur(8px);
+    }
+
+    .premium__card-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      color: #1e1e1e;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 5px 16px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .premium__card-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 12px;
+    }
+
+    .premium__card-price {
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .premium__card-price sup {
+      font-size: 1.2rem;
+      font-weight: 700;
+      vertical-align: top;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .premium__card-price sub {
+      font-size: 1rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.6);
+      vertical-align: baseline;
+    }
+
+    .premium__card-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 28px;
+    }
+
+    .premium__card-divider {
+      height: 1px;
+      background: rgba(255,255,255,.12);
+      margin-bottom: 24px;
+    }
+
+    .premium__card-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+
+    .premium__card-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,.88);
+    }
+
+    .premium__card-features li::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    .premium__card .btn--white {
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    .premium__card .btn--white:hover {
+      background: #f1f5f9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .premium__inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+    }
+
     /* ===== お問い合わせフォームセクション ===== */
     .contact {
       background: var(--surface);
+    }
+
+    /* お問い合わせフォームを中央寄せ（独立セクション用） */
+    .contact__centered {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .contact__centered .section-head {
+      text-align: center;
+    }
+
+    .contact__centered .section-desc {
+      max-width: 100%;
+      margin: 0 auto;
     }
 
     .contact__inner {
@@ -1712,6 +1936,72 @@
     .chat-typing span:nth-child(2) { animation-delay: .2s; }
     .chat-typing span:nth-child(3) { animation-delay: .4s; }
 
+    /* チャット入力フッター */
+    .chat-footer {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      background: var(--bg);
+      border-radius: 0 0 16px 16px;
+    }
+
+    .chat-input {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      max-height: 80px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color .2s;
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary-light);
+    }
+
+    .chat-input::placeholder {
+      color: var(--muted);
+    }
+
+    .chat-send {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .15s;
+      flex-shrink: 0;
+    }
+
+    .chat-send:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: scale(1.08);
+    }
+
+    .chat-send:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .chat-send svg {
+      width: 16px;
+      height: 16px;
+      stroke: #fff;
+    }
+
     @keyframes typing {
       0%, 80%, 100% { transform: scale(1);   opacity: .5; }
       40%            { transform: scale(1.3); opacity: 1;  }
@@ -1756,6 +2046,11 @@
       .contact__inner {
         grid-template-columns: 1fr;
         gap: 40px;
+      }
+
+      /* 連絡先カードをタブレットで縦積みに */
+      .contact__cards[style*="flex-direction:row"] {
+        flex-direction: column !important;
       }
 
       /* フッターを縦積みに */
@@ -1863,12 +2158,12 @@
                   </svg>
                 </a>
                 <ul class="nav__dropdown">
-                  <li><a href="#services">Webシステム開発</a></li>
-                  <li><a href="#services">AI・データ活用</a></li>
-                  <li><a href="#services">UX / UIデザイン</a></li>
-                  <li><a href="#services">クラウド構築・運用</a></li>
-                  <li><a href="#services">ITコンサルティング</a></li>
-                  <li><a href="#services">セキュリティ対策</a></li>
+                  <li><a href="#services">AIチャットボット開発</a></li>
+                  <li><a href="#services">LLM連携・カスタムAI</a></li>
+                  <li><a href="#services">会話UI/UXデザイン</a></li>
+                  <li><a href="#services">クラウド・API基盤構築</a></li>
+                  <li><a href="#services">AI導入コンサルティング</a></li>
+                  <li><a href="#services">保守・サポート・改善</a></li>
                 </ul>
               </li>
 
@@ -1891,6 +2186,9 @@
 
               <!-- 会社情報 -->
               <li><a href="#company">会社情報</a></li>
+
+              <!-- プレミアムプラン -->
+              <li><a href="#premium">プレミアム</a></li>
 
               <!-- お問い合わせ -->
               <li><a href="#contact">お問い合わせ</a></li>
@@ -1923,6 +2221,7 @@
     <a href="#pricing">料金プラン</a>
     <a href="#achievements">実績</a>
     <a href="#testimonials">お客様の声</a>
+    <a href="#premium">プレミアム</a>
     <a href="#company">会社情報</a>
     <a href="#contact">お問い合わせ</a>
     <a href="#contact" class="drawer-cta">無料相談</a>
@@ -1941,17 +2240,17 @@
         <!-- 左カラム：テキストエリア -->
         <div class="hero__content">
           <!-- バッジ -->
-          <div class="hero__badge">2024年 最新サービス開始</div>
+          <div class="hero__badge">🤖 AIチャットボット専門企業</div>
 
           <!-- メインタイトル -->
           <h1 class="hero__title">
-            <em>不可能</em>を可能に。
+            会話AIで、<em>ビジネス</em>を変える。
           </h1>
 
           <!-- サブテキスト -->
           <p class="hero__sub">
-            私たちは、お客様のビジネス課題をテクノロジーとクリエイティビティで解決します。
-            あなたの成長を、最短距離で実現するパートナーです。
+            最新のLLM技術を活用したAIチャットボットを開発・導入支援します。
+            カスタマーサポートから社内FAQ・営業支援まで、あらゆる対話を自動化します。
           </p>
 
           <!-- CTAボタン -->
@@ -1988,12 +2287,12 @@
             <div class="hero__img-badge-icon">
               <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
               </svg>
             </div>
             <div class="hero__img-badge-text">
-              <strong>300社+</strong>
-              <span>導入実績</span>
+              <strong>200社+</strong>
+              <span>チャットボット導入実績</span>
             </div>
           </div>
         </div>
@@ -2018,14 +2317,14 @@
     <a class="about-panel" href="#contact">
       <img
         class="about-panel__img"
-        src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&auto=format&fit=crop"
-        alt="代表メッセージ"
+        src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85&auto=format&fit=crop"
+        alt="AIチャットボット開発"
       />
       <div class="about-panel__body">
-        <div class="about-panel__en">Message</div>
-        <div class="about-panel__ja">トップメッセージ</div>
+        <div class="about-panel__en">AI Chatbot</div>
+        <div class="about-panel__ja">AIチャットボット開発</div>
         <span class="about-panel__btn">
-          トップメッセージ
+          サービスを見る
           <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
@@ -2037,14 +2336,14 @@
     <a class="about-panel" href="#contact">
       <img
         class="about-panel__img"
-        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=85&auto=format&fit=crop"
-        alt="会社情報"
+        src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=900&q=85&auto=format&fit=crop"
+        alt="AI・テクノロジー"
       />
       <div class="about-panel__body">
         <div class="about-panel__en">Company</div>
-        <div class="about-panel__ja">会社情報</div>
+        <div class="about-panel__ja">会社情報・導入事例</div>
         <span class="about-panel__btn">
-          会社情報
+          詳細を見る
           <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
           </svg>
@@ -2060,9 +2359,9 @@
     <div class="container">
       <div class="section-head fade-up">
         <span class="section-label">Our Services</span>
-        <h2 class="section-title">私たちのサービス</h2>
+        <h2 class="section-title">AIチャットボット開発サービス</h2>
         <p class="section-desc">
-          お客様のあらゆる課題に対応できる、幅広いソリューションをご提供します。
+          企画・設計から開発・運用まで、AIチャットボット導入に必要なすべてをワンストップで提供します。
         </p>
       </div>
 
@@ -2072,13 +2371,13 @@
           <div class="service-card__icon">
             <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
             </svg>
           </div>
-          <h3 class="service-card__title">Webシステム開発</h3>
+          <h3 class="service-card__title">AIチャットボット開発</h3>
           <p class="service-card__desc">
-            要件定義から設計・開発・運用まで一貫対応。
-            スケーラブルで保守性の高いシステムを構築します。
+            要件定義から設計・開発・テストまで一貫対応。
+            カスタマーサポート・社内FAQ・営業支援など用途に合わせて構築します。
           </p>
         </div>
 
@@ -2090,10 +2389,10 @@
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
             </svg>
           </div>
-          <h3 class="service-card__title">AI・データ活用</h3>
+          <h3 class="service-card__title">LLM連携・カスタムAI</h3>
           <p class="service-card__desc">
-            機械学習・生成AIをビジネスに組み込み、
-            業務効率化・意思決定の高度化を実現します。
+            Claude・GPT・Geminiなど最新LLMと自社システムを連携。
+            RAGやファインチューニングで精度の高い応答を実現します。
           </p>
         </div>
 
@@ -2105,10 +2404,10 @@
                 d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
             </svg>
           </div>
-          <h3 class="service-card__title">UX / UIデザイン</h3>
+          <h3 class="service-card__title">会話UI/UXデザイン</h3>
           <p class="service-card__desc">
-            ユーザー調査からプロトタイプ、実装まで。
-            使いやすく・美しいデジタル体験を設計します。
+            直感的で使いやすいチャットインターフェースを設計。
+            Webサイト・LINE・Slack等マルチプラットフォームに対応します。
           </p>
         </div>
 
@@ -2120,10 +2419,10 @@
                 d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
             </svg>
           </div>
-          <h3 class="service-card__title">クラウド構築・運用</h3>
+          <h3 class="service-card__title">クラウド・API基盤構築</h3>
           <p class="service-card__desc">
-            AWS・GCP・Azureを活用したクラウドインフラの
-            設計・構築・コスト最適化を支援します。
+            AWS・GCP・Azureを活用したスケーラブルなAI基盤を構築。
+            高可用性・セキュアなAPI環境を提供します。
           </p>
         </div>
 
@@ -2135,10 +2434,10 @@
                 d="M12 18h.01M8 21h8a2 2 0 002-2v-2a6 6 0 10-12 0v2a2 2 0 002 2zM12 3a4 4 0 100 8 4 4 0 000-8z"/>
             </svg>
           </div>
-          <h3 class="service-card__title">ITコンサルティング</h3>
+          <h3 class="service-card__title">AI導入コンサルティング</h3>
           <p class="service-card__desc">
-            DX推進・IT戦略策定・ベンダー選定など、
-            経営視点でのITアドバイザリーを提供します。
+            現状分析・ROI試算・ロードマップ策定まで支援。
+            適切なAI活用戦略でDX推進を加速します。
           </p>
         </div>
 
@@ -2150,10 +2449,10 @@
                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
           </div>
-          <h3 class="service-card__title">セキュリティ対策</h3>
+          <h3 class="service-card__title">保守・サポート・改善</h3>
           <p class="service-card__desc">
-            脆弱性診断・セキュリティ設計・インシデント対応まで、
-            安全なシステム運用をサポートします。
+            導入後の継続的なモニタリングと精度改善を提供。
+            会話ログ分析によるチャットボットの品質向上を支援します。
           </p>
         </div>
       </div>
@@ -2168,7 +2467,7 @@
         <span class="section-label">Pricing</span>
         <h2 class="section-title">料金プラン</h2>
         <p class="section-desc">
-          ビジネスの規模やニーズに合わせて選べる3つのプランをご用意しています。
+          チャットボットの規模・用途に合わせて選べる3つの年額プランをご用意しています。
         </p>
       </div>
 
@@ -2178,17 +2477,17 @@
         <div class="pricing-card fade-up">
           <div class="pricing-card__name">Light</div>
           <div class="pricing-card__price">
-            <sup>¥</sup>50,000<sub>/月</sub>
+            <sup>¥</sup>50,000<sub>/年</sub>
           </div>
-          <p class="pricing-card__desc">スタートアップ・小規模事業者向け</p>
+          <p class="pricing-card__desc">FAQ型チャットボット・小規模導入向け</p>
           <div class="pricing-card__divider"></div>
           <ul class="pricing-card__features">
-            <li>Webサイト制作（5ページまで）</li>
-            <li>レスポンシブ対応</li>
-            <li>月1回のコンテンツ更新</li>
+            <li>FAQ型チャットボット構築</li>
+            <li>Webサイトへの埋め込み対応</li>
+            <li>月次レポート提供</li>
             <li>メールサポート</li>
-            <li class="disabled">専任担当者アサイン</li>
-            <li class="disabled">カスタム機能開発</li>
+            <li class="disabled">LLM連携（GPT・Claude等）</li>
+            <li class="disabled">社内システム連携</li>
           </ul>
           <a href="#contact" class="btn btn--outline">プランを相談する</a>
         </div>
@@ -2198,38 +2497,39 @@
           <div class="pricing-card__badge">✦ おすすめ</div>
           <div class="pricing-card__name">Standard</div>
           <div class="pricing-card__price">
-            <sup>¥</sup>150,000<sub>/月</sub>
+            <sup>¥</sup>150,000<sub>/年</sub>
           </div>
-          <p class="pricing-card__desc">成長期の中小企業・本格的なDX推進に</p>
+          <p class="pricing-card__desc">LLM連携カスタムAIチャットボット向け</p>
           <div class="pricing-card__divider"></div>
           <ul class="pricing-card__features">
-            <li>Webシステム開発</li>
-            <li>レスポンシブ対応</li>
-            <li>月4回のコンテンツ更新</li>
+            <li>カスタムAIチャットボット開発</li>
+            <li>LLM連携（GPT・Claude等）</li>
+            <li>LINE / Slack 等マルチチャネル対応</li>
             <li>チャット・電話サポート</li>
             <li>専任担当者アサイン</li>
-            <li class="disabled">カスタム機能開発</li>
+            <li class="disabled">社内システム・API連携</li>
           </ul>
           <a href="#contact" class="btn btn--primary">プランを相談する</a>
         </div>
 
-        <!-- エンタープライズプラン -->
-        <div class="pricing-card fade-up" style="transition-delay:.2s">
-          <div class="pricing-card__name">Enterprise</div>
-          <div class="pricing-card__price" style="font-size:2rem">
-            お問い合わせ
+        <!-- プレミアム（最上位）プラン -->
+        <div class="pricing-card fade-up" style="transition-delay:.2s; background: linear-gradient(145deg, #0f172a, #1e3a8a); border-color: #3b82f6;">
+          <div class="pricing-card__badge" style="background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #1e1e1e;">✦ MOST PREMIUM</div>
+          <div class="pricing-card__name" style="color: #93c5fd;">Executive</div>
+          <div class="pricing-card__price" style="color: #fff;">
+            <sup style="color:#fff">¥</sup>500,000<sub style="color:rgba(255,255,255,.6)">/年〜</sub>
           </div>
-          <p class="pricing-card__desc">大企業・特定要件のカスタム開発向け</p>
-          <div class="pricing-card__divider"></div>
+          <p class="pricing-card__desc" style="color:rgba(255,255,255,.6)">大企業・ハイトラフィックサービス向けフルカスタム</p>
+          <div class="pricing-card__divider" style="background:rgba(255,255,255,.15)"></div>
           <ul class="pricing-card__features">
-            <li>フルカスタム開発</li>
-            <li>レスポンシブ対応</li>
-            <li>無制限コンテンツ更新</li>
-            <li>24時間サポート対応</li>
-            <li>専任担当者アサイン</li>
-            <li>カスタム機能開発</li>
+            <li style="color:rgba(255,255,255,.9)">フルカスタムAIチャットボット開発</li>
+            <li style="color:rgba(255,255,255,.9)">独自LLMファインチューニング・RAG</li>
+            <li style="color:rgba(255,255,255,.9)">社内システム・API完全連携</li>
+            <li style="color:rgba(255,255,255,.9)">専任チームアサイン（3名以上）</li>
+            <li style="color:rgba(255,255,255,.9)">SLA保証・24時間365日サポート</li>
+            <li style="color:rgba(255,255,255,.9)">セキュリティ監査・ホワイトラベル対応</li>
           </ul>
-          <a href="#contact" class="btn btn--outline">詳細を問い合わせる</a>
+          <a href="#contact" class="btn btn--primary" style="display:flex;width:100%;box-sizing:border-box;justify-content:center;align-items:center;background:#3b82f6">今すぐ相談する</a>
         </div>
 
       </div>
@@ -2244,7 +2544,7 @@
         <span class="section-label">Our Track Record</span>
         <h2 class="section-title">実績</h2>
         <p class="section-desc" style="color:rgba(255,255,255,.65)">
-          多くのお客様に選ばれ、確かな成果を積み重ねてきました。
+          多くの企業にAIチャットボットを導入し、業務効率化と顧客満足度向上を実現しています。
         </p>
       </div>
 
@@ -2252,9 +2552,9 @@
         <!-- 数値カード 1 -->
         <div class="achievement-card fade-up">
           <div class="achievement-card__num">
-            <span class="count-up" data-target="300">0</span><span>社+</span>
+            <span class="count-up" data-target="200">0</span><span>社+</span>
           </div>
-          <div class="achievement-card__label">導入実績</div>
+          <div class="achievement-card__label">チャットボット導入実績</div>
         </div>
 
         <!-- 数値カード 2 -->
@@ -2268,9 +2568,9 @@
         <!-- 数値カード 3 -->
         <div class="achievement-card fade-up" style="transition-delay:.2s">
           <div class="achievement-card__num">
-            <span class="count-up" data-target="15">0</span><span>年</span>
+            <span class="count-up" data-target="65">0</span><span>%</span>
           </div>
-          <div class="achievement-card__label">設立からの歴史</div>
+          <div class="achievement-card__label">平均問い合わせ対応時間削減率</div>
         </div>
       </div>
     </div>
@@ -2294,9 +2594,9 @@
         <div class="testi-card fade-up">
           <div class="testi-card__stars">★★★★★</div>
           <p class="testi-card__quote">
-            導入後わずか3ヶ月で業務効率が40%向上しました。
-            チームの提案力と技術力の高さに驚かされています。
-            今では欠かせないパートナーです。
+            AIチャットボット導入後、カスタマーサポートへの問い合わせが
+            月300件から80件に激減しました。スタッフが本来の業務に集中できるようになり、
+            チーム全体の生産性が大幅に向上しました。
           </p>
           <div class="testi-card__person">
             <img
@@ -2306,7 +2606,7 @@
             />
             <div>
               <div class="testi-card__name">田中 誠</div>
-              <div class="testi-card__role">代表取締役 / 株式会社TAMOTO商事</div>
+              <div class="testi-card__role">カスタマーサービス部長 / EC事業会社</div>
             </div>
           </div>
         </div>
@@ -2315,9 +2615,9 @@
         <div class="testi-card fade-up" style="transition-delay:.1s">
           <div class="testi-card__stars">★★★★★</div>
           <p class="testi-card__quote">
-            AIシステムの導入により、月次レポート作成時間を
-            従来の8時間から1時間に短縮できました。
-            丁寧なサポートで安心して任せられます。
+            社内向けFAQボットを導入したことで、新入社員の質問対応コストが
+            約70%削減されました。24時間いつでも回答できる点が特に好評で、
+            従業員満足度の向上にも繋がっています。
           </p>
           <div class="testi-card__person">
             <img
@@ -2327,7 +2627,7 @@
             />
             <div>
               <div class="testi-card__name">鈴木 花子</div>
-              <div class="testi-card__role">マーケティング部長 / TAMOTOテクノロジー</div>
+              <div class="testi-card__role">人事部マネージャー / 製造業</div>
             </div>
           </div>
         </div>
@@ -2336,9 +2636,9 @@
         <div class="testi-card fade-up" style="transition-delay:.2s">
           <div class="testi-card__stars">★★★★★</div>
           <p class="testi-card__quote">
-            リニューアルしたWebサイトのコンバージョン率が
-            2.5倍になりました。デザインへのこだわりと
-            レスポンシブ対応の精度に大変満足しています。
+            営業支援チャットボットの導入でリード獲得数が2.3倍になりました。
+            訪問者の質問にリアルタイムで対応し、資料請求や商談予約まで
+            自動化できた点が非常に効果的でした。
           </p>
           <div class="testi-card__person">
             <img
@@ -2348,8 +2648,76 @@
             />
             <div>
               <div class="testi-card__name">山本 健太</div>
-              <div class="testi-card__role">事業開発責任者 / TAMOTOグループ</div>
+              <div class="testi-card__role">マーケティング責任者 / SaaS企業</div>
             </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== プレミアムプランセクション ===== -->
+  <section class="section premium" id="premium">
+    <div class="container">
+      <div class="premium__inner">
+
+        <!-- 左：訴求テキスト -->
+        <div class="fade-up">
+          <span class="section-label">Premium Plan</span>
+          <h2 class="section-title">最上位プランで、<br>AIの可能性を最大化。</h2>
+          <p class="premium__sub">
+            大企業・ハイトラフィックなサービスに対応した、
+            完全オーダーメイドのAIチャットボット開発プランです。
+            専任チームが企画から保守まで一気通貫で支援します。
+          </p>
+
+          <ul class="premium__features">
+            <li>専任エンジニアチームのアサイン</li>
+            <li>独自LLMのファインチューニング・RAG構築</li>
+            <li>社内システム・ERPとのフルAPI連携</li>
+            <li>SLA保証（稼働率99.9%以上）</li>
+            <li>24時間365日の優先サポート対応</li>
+            <li>セキュリティ監査・コンプライアンス対応</li>
+            <li>ホワイトラベル・OEM提供</li>
+          </ul>
+
+          <div class="premium__actions">
+            <a href="#contact" class="btn btn--primary">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
+              </svg>
+              今すぐ相談する
+            </a>
+          </div>
+        </div>
+
+        <!-- 右：プランカード -->
+        <div class="fade-up" style="transition-delay:.15s">
+          <div class="premium__card">
+            <div class="premium__card-badge">✦ MOST PREMIUM</div>
+            <div class="premium__card-name">Executive</div>
+            <div class="premium__card-price">
+              <sup>¥</sup>500,000<sub>/年〜</sub>
+            </div>
+            <p class="premium__card-desc">大企業・ハイトラフィックサービス向けフルカスタム</p>
+            <div class="premium__card-divider"></div>
+            <ul class="premium__card-features">
+              <li>フルカスタムAIチャットボット開発</li>
+              <li>独自LLMファインチューニング</li>
+              <li>RAG（検索拡張生成）構築</li>
+              <li>社内システム・API完全連携</li>
+              <li>専任チームアサイン（3名以上）</li>
+              <li>SLA保証・24時間サポート</li>
+              <li>セキュリティ監査・ホワイトラベル対応</li>
+            </ul>
+            <a href="#contact" class="btn btn--white">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              プランについて問い合わせる
+            </a>
           </div>
         </div>
 
@@ -2361,46 +2729,46 @@
   <!-- ===== お問い合わせセクション ===== -->
   <section class="section contact" id="contact">
     <div class="container">
-      <div class="contact__inner">
-        <!-- 左：情報エリア -->
-        <div class="fade-up">
+      <div class="contact__centered">
+
+        <!-- 見出し（中央揃え） -->
+        <div class="section-head fade-up" style="text-align:center">
           <span class="section-label">Contact</span>
           <h2 class="section-title">お問い合わせ</h2>
-          <p class="section-desc">
-            サービスに関するご質問、お見積もりのご依頼など、
-            お気軽にお問い合わせください。
+          <p class="section-desc" style="margin:0 auto">
+            サービス・料金・導入事例など、どんな小さなご質問もお気軽にどうぞ。
             通常1〜2営業日以内にご返信します。
           </p>
+        </div>
 
-          <div class="contact__cards">
-            <!-- メール -->
-            <div class="contact__card">
-              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              <div class="contact__card-text">
-                <strong>info@example.co.jp</strong>
-                メールでのお問い合わせ
-              </div>
+        <!-- 連絡先カード（横並び） -->
+        <div class="contact__cards" style="flex-direction:row;margin-bottom:40px">
+          <!-- メール -->
+          <div class="contact__card" style="flex:1">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <div class="contact__card-text">
+              <strong>shoya041613@gmail.com</strong>
+              メールでのお問い合わせ
             </div>
-
-            <!-- 電話 -->
-            <div class="contact__card">
-              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-              </svg>
-              <div class="contact__card-text">
-                <strong>03-0000-0000</strong>
-                平日 9:00〜18:00
-              </div>
+          </div>
+          <!-- 営業時間 -->
+          <div class="contact__card" style="flex:1">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div class="contact__card-text">
+              <strong>9:00〜18:00</strong>
+              営業時間（平日）
             </div>
           </div>
         </div>
 
-        <!-- 右：フォームエリア -->
-        <div class="fade-up" style="transition-delay:.15s">
+        <!-- フォームエリア -->
+        <div class="fade-up">
           <div class="form" id="contact-form-wrap">
             <!-- フォーム本体 -->
             <form id="contact-form" novalidate>
@@ -2453,6 +2821,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
@@ -2465,7 +2834,7 @@
         <!-- 左：ロゴとタグライン -->
         <div>
           <div class="footer__logo">株式会社<span>TAMOTO</span></div>
-          <div class="footer__tagline">不可能を可能に。</div>
+          <div class="footer__tagline">会話AIで、ビジネスを変える。</div>
         </div>
 
         <!-- 右：ナビリンク -->
@@ -2473,10 +2842,10 @@
           <div class="footer__nav-group">
             <h4>Services</h4>
             <ul>
-              <li><a href="#services">Webシステム開発</a></li>
-              <li><a href="#services">AI・データ活用</a></li>
-              <li><a href="#services">UX/UIデザイン</a></li>
-              <li><a href="#services">クラウド構築</a></li>
+              <li><a href="#services">AIチャットボット開発</a></li>
+              <li><a href="#services">LLM連携・カスタムAI</a></li>
+              <li><a href="#services">会話UI/UXデザイン</a></li>
+              <li><a href="#services">AI導入コンサルティング</a></li>
             </ul>
           </div>
           <div class="footer__nav-group">
@@ -2492,7 +2861,7 @@
       </div>
 
       <div class="footer__bottom">
-        &copy; 2024 株式会社TAMOTO. All rights reserved.
+        &copy; 2025 株式会社TAMOTO. All rights reserved.
       </div>
     </div>
   </footer>
@@ -2534,6 +2903,23 @@
 
       <!-- メッセージ表示エリア -->
       <div class="chat-body" id="chat-body"></div>
+
+      <!-- テキスト入力エリア -->
+      <div class="chat-footer">
+        <textarea
+          class="chat-input"
+          id="chat-input"
+          placeholder="メッセージを入力..."
+          rows="1"
+          aria-label="メッセージを入力"
+        ></textarea>
+        <button class="chat-send" id="chat-send" aria-label="送信" disabled>
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2690,138 +3076,250 @@
 
 
     /* ==========================================
-       チャットボット
+       チャットボット（Claude AI 対応版）
     ========================================== */
     const chatToggle = document.getElementById('chat-toggle');
     const chatWindow = document.getElementById('chat-window');
     const chatBody   = document.getElementById('chat-body');
     const chatBadge  = document.getElementById('chat-badge');
+    const chatInput  = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send');
 
-    // チャットが初期化済みかどうかのフラグ
+    // 初期化フラグとメッセージ履歴
     let chatInitialized = false;
+    let isStreaming = false;
+    const messageHistory = []; // Claude API に渡す会話履歴
 
-    // FAQ の定義（選択肢 → 回答）
-    const FAQ = [
-      {
-        label: '💡 サービスについて知りたい',
-        answer: 'Webシステム開発・AI活用・UXデザイン・クラウド構築・ITコンサルなど幅広くご支援しています。詳しくはページ上部の「サービス」セクションをご覧ください。',
-        scroll: '#services',
-      },
-      {
-        label: '💰 料金・見積もりについて',
-        answer: '料金はプロジェクトの規模や要件によって異なります。まずはお気軽にご相談ください。無料でのお見積もりも承っています！',
-        scroll: null,
-      },
-      {
-        label: '📩 お問い合わせしたい',
-        answer: 'ページ下部のお問い合わせフォームからご連絡いただけます。ご案内します！',
-        scroll: '#contact',
-      },
-      {
-        label: '❓ その他のご質問',
-        answer: '詳細についてはお問い合わせフォームよりお気軽にご連絡ください。担当者が丁寧にご対応します。',
-        scroll: null,
-      },
+    // クイックスタート選択肢
+    const QUICK_STARTS = [
+      { label: '🤖 チャットボット開発について', text: 'AIチャットボットの開発についてどのようなことができますか？' },
+      { label: '💰 料金・見積もりについて',      text: 'AIチャットボット開発の料金プランを教えてください。' },
+      { label: '⚡ 導入期間はどれくらい？',      text: 'チャットボット導入までの期間はどのくらいかかりますか？' },
+      { label: '📩 まずは相談したい',            text: 'AIチャットボットの導入を検討しています。どこから始めればいいですか？' },
     ];
 
-    // チャットを開閉する
+    // ===== 開閉 =====
     chatToggle.addEventListener('click', () => {
       const isOpen = chatToggle.classList.toggle('open');
       chatWindow.classList.toggle('open', isOpen);
-      chatBadge.classList.add('hidden'); // バッジを消す
-
-      // 初回オープン時にウェルカムメッセージを表示
+      chatBadge.classList.add('hidden');
       if (isOpen && !chatInitialized) {
         chatInitialized = true;
         initChat();
       }
+      if (isOpen) chatInput.focus();
     });
 
-    // チャット初期化：ウェルカムメッセージ＋選択肢を表示
+    // ===== チャット初期化 =====
     function initChat() {
-      addBotMessage('こんにちは！👋 株式会社TAMOTOのサポートチャットです。何かお手伝いできますか？', true);
+      addBotMessage('こんにちは！👋 株式会社TAMOTOのAIアシスタントです。\nAIチャットボット開発に関するご質問、お気軽にどうぞ！', true);
     }
 
-    // ボットのメッセージを追加する
-    function addBotMessage(text, showChoices = false) {
-      // 「入力中...」インジケーターを表示
+    // ===== ボットメッセージを追加（静的テキスト用） =====
+    function addBotMessage(text, showQuickStarts = false) {
+      // 入力中インジケーターを表示
       const typing = document.createElement('div');
       typing.className = 'chat-msg chat-msg--bot';
-      typing.innerHTML = `
-        <div class="chat-typing">
-          <span></span><span></span><span></span>
-        </div>`;
+      typing.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
       chatBody.appendChild(typing);
       scrollChat();
 
-      // 少し遅らせてメッセージを表示（自然な応答感を演出）
       setTimeout(() => {
         typing.remove();
 
-        // メッセージバブルを追加
         const msg = document.createElement('div');
         msg.className = 'chat-msg chat-msg--bot';
-        msg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
+        // 改行文字を <br> に変換して表示
+        msg.innerHTML = `<div class="chat-msg__bubble">${text.replace(/\n/g, '<br>')}</div>`;
         chatBody.appendChild(msg);
 
-        // 選択肢ボタンを追加
-        if (showChoices) {
-          const choices = document.createElement('div');
-          choices.className = 'chat-choices';
-
-          FAQ.forEach(faq => {
-            const btn = document.createElement('button');
-            btn.className = 'chat-choice';
-            btn.textContent = faq.label;
-
-            btn.addEventListener('click', () => {
-              // 選択肢を押せなくする
-              choices.classList.add('disabled');
-
-              // ユーザー側のメッセージとして選択内容を表示
-              addUserMessage(faq.label);
-
-              // ボットの回答を表示
-              setTimeout(() => {
-                addBotMessage(faq.answer, false);
-
-                // スクロール先がある場合はスクロール後に再度選択肢を表示
-                if (faq.scroll) {
-                  setTimeout(() => {
-                    document.querySelector(faq.scroll)?.scrollIntoView({ behavior: 'smooth' });
-                    addBotMessage('他にご質問はありますか？', true);
-                  }, 600);
-                } else {
-                  setTimeout(() => addBotMessage('他にご質問はありますか？', true), 800);
-                }
-              }, 600);
-            });
-
-            choices.appendChild(btn);
-          });
-
-          chatBody.appendChild(choices);
+        // クイックスタートボタンを表示
+        if (showQuickStarts) {
+          renderQuickStarts();
         }
-
         scrollChat();
-      }, 700);
+      }, 600);
     }
 
-    // ユーザーのメッセージを追加する
+    // ===== クイックスタートボタンを描画 =====
+    function renderQuickStarts() {
+      const choices = document.createElement('div');
+      choices.className = 'chat-choices';
+
+      QUICK_STARTS.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'chat-choice';
+        btn.textContent = item.label;
+        btn.addEventListener('click', () => {
+          choices.classList.add('disabled');
+          sendMessage(item.text);
+        });
+        choices.appendChild(btn);
+      });
+
+      chatBody.appendChild(choices);
+      scrollChat();
+    }
+
+    // ===== ユーザーメッセージを表示 =====
     function addUserMessage(text) {
       const msg = document.createElement('div');
       msg.className = 'chat-msg chat-msg--user';
-      msg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
+      msg.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(text)}</div>`;
       chatBody.appendChild(msg);
       scrollChat();
     }
 
-    // チャットエリアを最下部にスクロール
+    // ===== Claude API へリクエストを送り、ストリーミングで応答を表示 =====
+    async function sendMessage(text) {
+      if (!text.trim() || isStreaming) return;
+
+      isStreaming = true;
+      setSendDisabled(true);
+
+      // ユーザーメッセージを表示・履歴に追加
+      addUserMessage(text);
+      messageHistory.push({ role: 'user', content: text });
+
+      // 入力中インジケーターを表示
+      const typing = document.createElement('div');
+      typing.className = 'chat-msg chat-msg--bot';
+      typing.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+      chatBody.appendChild(typing);
+      scrollChat();
+
+      // ボットの応答バブルを先に生成（テキストをストリームで追記する）
+      let botBubble = null;
+      let fullResponse = '';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: messageHistory }),
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        // 入力中インジケーターを除去してバブルを生成
+        typing.remove();
+        botBubble = document.createElement('div');
+        botBubble.className = 'chat-msg chat-msg--bot';
+        botBubble.innerHTML = '<div class="chat-msg__bubble"></div>';
+        chatBody.appendChild(botBubble);
+        const bubble = botBubble.querySelector('.chat-msg__bubble');
+
+        // SSE ストリームを読み込む
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // 未完了の行を次へ持ち越し
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const data = line.slice(6);
+            if (data === '[DONE]') continue;
+
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.error) {
+                bubble.textContent = parsed.error;
+              } else if (parsed.text) {
+                fullResponse += parsed.text;
+                // 改行を <br> に変換してHTMLとして設定
+                bubble.innerHTML = escapeHtml(fullResponse).replace(/\n/g, '<br>');
+                scrollChat();
+              }
+            } catch {
+              // JSON パースエラーは無視
+            }
+          }
+        }
+
+        // 会話履歴にアシスタントの回答を追加
+        if (fullResponse) {
+          messageHistory.push({ role: 'assistant', content: fullResponse });
+        }
+
+      } catch (error) {
+        console.error('チャットエラー:', error);
+        typing.remove();
+        if (!botBubble) {
+          botBubble = document.createElement('div');
+          botBubble.className = 'chat-msg chat-msg--bot';
+          botBubble.innerHTML = '<div class="chat-msg__bubble"></div>';
+          chatBody.appendChild(botBubble);
+        }
+        botBubble.querySelector('.chat-msg__bubble').textContent =
+          '⚠️ 通信エラーが発生しました。しばらくしてから再度お試しください。';
+      } finally {
+        isStreaming = false;
+        setSendDisabled(false);
+        scrollChat();
+        chatInput.focus();
+      }
+    }
+
+    // ===== 送信ボタンの有効/無効切替 =====
+    function setSendDisabled(disabled) {
+      chatSendBtn.disabled = disabled;
+    }
+
+    // ===== チャットエリアを最下部にスクロール =====
     function scrollChat() {
       requestAnimationFrame(() => {
         chatBody.scrollTop = chatBody.scrollHeight;
       });
     }
+
+    // ===== XSS 対策：HTML エスケープ =====
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ===== テキストエリアの自動リサイズ =====
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 80) + 'px';
+      setSendDisabled(!chatInput.value.trim() || isStreaming);
+    });
+
+    // ===== Enter キーで送信（Shift+Enter は改行） =====
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (text && !isStreaming) {
+          chatInput.value = '';
+          chatInput.style.height = 'auto';
+          setSendDisabled(true);
+          sendMessage(text);
+        }
+      }
+    });
+
+    // ===== 送信ボタンクリック =====
+    chatSendBtn.addEventListener('click', () => {
+      const text = chatInput.value.trim();
+      if (text && !isStreaming) {
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        setSendDisabled(true);
+        sendMessage(text);
+      }
+    });
   </script>
 </body>
 </html>

@@ -30,6 +30,10 @@
 ```
 my-hp/
 ├── index.html          # 企業コーポレートHP（ヒーロー / サービス / 実績 / お問い合わせ / チャットボット）
+├── server.js           # Express バックエンド（Claude API プロキシ）
+├── vite.config.js      # Vite 設定（/api を port 3001 にプロキシ）
+├── .env                # APIキー設定（gitignore済み）
+├── .env.example        # APIキー設定テンプレート
 ├── CLAUDE.md           # このファイル
 └── .claude/
     └── launch.json     # 開発サーバー設定
@@ -46,12 +50,24 @@ my-hp/
 | 実績 | `#achievements` | カウントアップ数値3件、ネイビー背景 |
 | お客様の声 | `#testimonials` | 顔写真付き3件のレビューカード |
 | お問い合わせ | `#contact` | バリデーション付きフォーム |
-| チャットボット | — | 右下フローティング、FAQ選択肢方式 |
+| チャットボット | — | 右下フローティング、Claude AI ストリーミング対応 |
 
-## 開発サーバー
+## チャットボット アーキテクチャ
+
+- **フロントエンド（index.html）**：テキスト入力 + SSEストリーミング受信
+- **バックエンド（server.js）**：Express + `@anthropic-ai/sdk`、`POST /api/chat` エンドポイント
+- **モデル**：`claude-haiku-4-5`（高速・低コスト）
+- **会話管理**：フロントエンドで `messageHistory` を保持し複数ターン対応
+
+## 開発サーバー起動
 
 ```bash
-python3 -m http.server 8080
+# 1. APIキーを設定
+cp .env.example .env
+# .env を開いて ANTHROPIC_API_KEY を設定
+
+# 2. バックエンド（port 3001）＋フロントエンド（port 5173）を同時起動
+npm run dev
 ```
 
-ブラウザで `http://localhost:8080` を開く。
+ブラウザで `http://localhost:5173` を開く。
