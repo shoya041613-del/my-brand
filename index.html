@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>株式会社TAMOTO | 不可能を可能に</title>
+  <style>
+    /* ===== リセット & 基本設定 ===== */
+    *, *::before, *::after {
+      box-sizing: bx;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:            #ffffff;
+      --surface:       #f8fafc;
+      --border:        #e2e8f0;
+      --primary:       #1e40af;       /* ネイビーブルー */
+      --primary-light: #3b82f6;       /* アクセントブルー */
+      --primary-dark:  #1e3a8a;       /* ダークネイビー */
+      --text:          #111827;
+      --muted:         #6b7280;
+      --white:         #ffffff;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===== ユーティリティ ===== */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* セクション共通の上下余白 */
+    .section {
+      padding: 96px 0;
+    }
+
+    /* セクション見出し */
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 560px;
+    }
+
+    .section-head {
+      margin-bottom: 56px;
+    }
+
+    /* ===== ナビゲーション（OLCスタイル：ロゴ左＋右2段） ===== */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s, transform .35s ease;
+    }
+
+    .nav.scrolled {
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+
+    /* スクロール下方向で画面外に退場 */
+    .nav.hidden {
+      transform: translateY(-100%);
+    }
+
+    /* ヘッダー全体のフレックスコンテナ */
+    .nav__inner {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      min-height: 64px; /* モバイル時の最低高さを保証 */
+    }
+
+    /* ===== ロゴエリア ===== */
+    .nav__logo {
+      display: flex;
+      align-items: center;
+      padding: 12px 0 12px 4px; /* 縦paddingでモバイルナビの高さを確保 */
+      text-decoration: none;
+    }
+
+    /* ロゴのアイコン部分 */
+    .nav__logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav__logo-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #fff;
+    }
+
+    /* ロゴのテキスト部分 */
+    .nav__logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .nav__logo-text .logo-en {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: var(--primary-dark);
+    }
+
+    .nav__logo-text .logo-ja {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== 右カラム：ユーティリティ行 ＋ ナビ行 ===== */
+    .nav__right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    /* 上段：Language ∨ ｜ 検索 */
+    .nav__utility {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      height: 32px;
+    }
+
+    .nav__util-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 16px;
+      height: 100%;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-left: 1px solid var(--border);
+      cursor: pointer;
+      transition: color .2s, background .2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav__util-btn:first-child {
+      border-left: none;
+    }
+
+    .nav__util-btn:hover {
+      color: var(--primary);
+      background: var(--surface);
+    }
+
+    .nav__util-btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* 下段：メインナビゲーション */
+    .nav__menu {
+      display: flex;
+      align-items: stretch;
+      list-style: none;
+      height: 52px;
+    }
+
+    .nav__menu > li {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* 各ナビリンク */
+    .nav__menu > li > a {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 18px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      border-left: 1px solid var(--border);
+      white-space: nowrap;
+      transition: color .2s, background .2s;
+      text-decoration: none;
+    }
+
+    .nav__menu > li:first-child > a {
+      border-left: none;
+    }
+
+    .nav__menu > li > a:hover {
+      color: var(--primary);
+      background: var(--surface);
+    }
+
+    /* ドロップダウン矢印（∨） */
+    .nav__chevron {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .nav__menu > li:hover .nav__chevron {
+      transform: rotate(180deg);
+    }
+
+    /* 無料相談CTAボタン（最右端） */
+    .nav__menu > li.nav__item--cta > a {
+      background: var(--primary);
+      color: var(--white);
+      padding: 0 22px;
+      font-weight: 700;
+      border-left: none;
+      margin-left: 8px;
+      transition: background .2s;
+    }
+
+    .nav__menu > li.nav__item--cta > a:hover {
+      background: var(--primary-dark);
+      color: var(--white);
+    }
+
+    /* ===== ドロップダウンメニュー ===== */
+    .nav__dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 200px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--primary);
+      box-shadow: var(--shadow-md);
+      list-style: none;
+      z-index: 200;
+      /* 非表示状態 */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity .2s, transform .2s, visibility .2s;
+    }
+
+    /* ホバーでドロップダウン表示 */
+    .nav__menu > li:hover .nav__dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav__dropdown li a {
+      display: block;
+      padding: 11px 20px;
+      font-size: 0.85rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      transition: background .15s, color .15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav__dropdown li:last-child a {
+      border-bottom: none;
+    }
+
+    .nav__dropdown li a:hover {
+      background: var(--surface);
+      color: var(--primary);
+      padding-left: 26px; /* ホバーで少し右にずれる演出 */
+    }
+
+    /* ===== ハンバーガーボタン（モバイル用） ===== */
+    .nav__hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 0 16px;
+      background: none;
+      border: none;
+      border-left: 1px solid var(--border);
+      height: 100%;
+      min-width: 52px;
+      align-self: stretch;
+    }
+
+    .nav__hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+
+    .nav__hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav__hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav__hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ===== モバイルドロワー ===== */
+    .nav__drawer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--white);
+      z-index: 99;
+      flex-direction: column;
+      padding-top: 80px;
+      overflow-y: auto;
+    }
+
+    .nav__drawer.open {
+      display: flex;
+    }
+
+    /* ドロワー内のリンク */
+    .nav__drawer a {
+      display: block;
+      padding: 16px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      transition: color .2s, background .2s;
+      text-decoration: none;
+    }
+
+    .nav__drawer a:hover {
+      color: var(--primary);
+      background: var(--surface);
+    }
+
+    /* ドロワー内のCTAリンク */
+    .nav__drawer a.drawer-cta {
+      margin: 24px 28px;
+      border: none;
+      background: var(--primary);
+      color: var(--white);
+      text-align: center;
+      border-radius: 999px;
+      padding: 14px 28px;
+    }
+
+    .nav__drawer a.drawer-cta:hover {
+      background: var(--primary-dark);
+      color: var(--white);
+    }
+
+    /* ドロワー内のユーティリティリンク */
+    .nav__drawer-utility {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav__drawer-utility a {
+      flex: 1;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border-bottom: none;
+      border-right: 1px solid var(--border);
+    }
+
+    .nav__drawer-utility a:last-child {
+      border-right: none;
+    }
+
+    /* ===== ヒーローセクション ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      /* 白→薄青のグラデーション背景 */
+      background: linear-gradient(140deg, #ffffff 0%, #eff6ff 55%, #dbeafe 100%);
+    }
+
+    /* 装飾用の幾何学図形 */
+    .hero__shape {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero__shape--1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,.12) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+    }
+
+    .hero__shape--2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(30,64,175,.08) 0%, transparent 70%);
+      bottom: -80px;
+      left: -80px;
+    }
+
+    /* 格子模様の装飾 */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(30,64,175,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,64,175,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ヒーロー内部を左右2カラムに分割 */
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 80px;
+      padding-top: 108px;  /* ナビ高さ84px（ユーティリティ32px+メインナビ52px）＋余白 */
+      padding-bottom: 80px;
+      min-height: 100vh;
+    }
+
+    .hero__content {
+      /* グリッド左カラム：テキスト */
+    }
+
+    /* 右カラム：笑顔の写真エリア */
+    .hero__visual {
+      position: relative;
+    }
+
+    /* メイン写真のラッパー（装飾フレーム付き） */
+    .hero__img-wrap {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4 / 5;
+    }
+
+    .hero__img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 写真の上に重なる薄いグラデーション（下部の自然な馴染み） */
+    .hero__img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(30,64,175,.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* 写真の右下に浮かぶ小さな実績バブル */
+    .hero__img-badge {
+      position: absolute;
+      bottom: -16px;
+      right: -16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .hero__img-badge-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hero__img-badge-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--primary);
+    }
+
+    .hero__img-badge-text strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .hero__img-badge-text span {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    /* 写真の左上に浮かぶ小さな評価バブル */
+    .hero__img-badge2 {
+      position: absolute;
+      top: -16px;
+      left: -16px;
+      background: var(--primary);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: 0 8px 24px rgba(30,64,175,.3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .hero__img-badge2 .stars {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .hero__img-badge2 span {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    /* ヒーローのバッジ */
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,130,246,.1);
+      border: 1px solid rgba(59,130,246,.25);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+    }
+
+    /* バッジの点滅ドット */
+    .hero__badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .hero__title {
+      font-size: clamp(2.8rem, 7vw, 5rem); /* 最小・推奨・最大をすべて拡大 */
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 32px;
+      color: var(--text);
+    }
+
+    /* タイトルの青いハイライト部分 */
+    .hero__title em {
+      font-style: normal;
+      color: var(--primary);
+      position: relative;
+    }
+
+    .hero__title em::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-light), var(--primary));
+      border-radius: 2px;
+      opacity: 0.4;
+    }
+
+    .hero__sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    /* CTAボタン群 */
+    .hero__actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+
+    .btn--primary {
+      background: var(--primary);
+      color: var(--white);
+      box-shadow: 0 4px 20px rgba(30,64,175,.3);
+    }
+
+    .btn--primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(30,64,175,.4);
+    }
+
+    .btn--outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn--outline:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* スクロール誘導矢印 */
+    .hero__scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      animation: bounce 2.5s ease-in-out infinite;
+    }
+
+    .hero__scroll svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ===== 会社情報パネルセクション ===== */
+    .about-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* 各パネル共通 */
+    .about-panel {
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-end;
+      cursor: pointer;
+    }
+
+    /* 背景画像 */
+    .about-panel__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+
+    /* ホバーで画像をズームイン */
+    .about-panel:hover .about-panel__img {
+      transform: scale(1.05);
+    }
+
+    /* 下からのグラデーションオーバーレイ */
+    .about-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10, 20, 60, 0.15) 0%,
+        rgba(10, 20, 60, 0.65) 60%,
+        rgba(10, 20, 60, 0.85) 100%
+      );
+      transition: background .4s ease;
+    }
+
+    .about-panel:hover::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(10, 20, 60, 0.2) 0%,
+        rgba(10, 20, 60, 0.72) 60%,
+        rgba(10, 20, 60, 0.9) 100%
+      );
+    }
+
+    /* テキスト・ボタンのコンテンツエリア */
+    .about-panel__body {
+      position: relative;
+      z-index: 1;
+      padding: 40px 48px;
+      width: 100%;
+    }
+
+    /* 英語ラベル（"Company" など） */
+    .about-panel__en {
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 10px;
+      /* 下線アクセント */
+      position: relative;
+      display: inline-block;
+    }
+
+    .about-panel__en::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--white);
+      border-radius: 2px;
+    }
+
+    /* 日本語サブタイトル */
+    .about-panel__ja {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 18px;
+      margin-bottom: 24px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ボタン */
+    .about-panel__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      color: var(--primary-dark);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 13px 24px;
+      border-radius: 999px;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      text-decoration: none;
+    }
+
+    .about-panel__btn:hover {
+      background: rgba(255, 255, 255, 0.92);
+      transform: translateX(4px);
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+
+    .about-panel__btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+
+    .about-panel__btn:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* レスポンシブ：タブレット以下は縦積み */
+    @media (max-width: 768px) {
+      .about-panels { grid-template-columns: 1fr; }
+      .about-panel  { min-height: 320px; }
+      .about-panel__body { padding: 32px 28px; }
+    }
+
+    /* ===== サービスセクション ===== */
+    .services {
+      background: var(--bg);
+    }
+
+    /* サービスカードのグリッド */
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(59,130,246,.3);
+    }
+
+    /* サービスカードのアイコン */
+    .service-card__icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .service-card__icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--primary);
+    }
+
+    .service-card__title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .service-card__desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ===== 料金表セクション ===== */
+    .pricing {
+      background: var(--surface);
+    }
+
+    /* 料金プランのグリッド（3列） */
+    .pricing__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* 料金カード */
+    .pricing-card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      transition: transform .25s, box-shadow .25s;
+      position: relative;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* おすすめプランは枠線をネイビーに */
+    .pricing-card--featured {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* おすすめバッジ */
+    .pricing-card__badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 4px 16px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pricing-card__name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+    }
+
+    /* 月額価格 */
+    .pricing-card__price {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-card__price sup {
+      font-size: 1.1rem;
+      font-weight: 700;
+      vertical-align: top;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .pricing-card__price sub {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--muted);
+      vertical-align: baseline;
+    }
+
+    .pricing-card__desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+      min-height: 40px;
+    }
+
+    /* 料金カードの区切り線 */
+    .pricing-card__divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+
+    /* 機能リスト */
+    .pricing-card__features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .pricing-card__features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+
+    /* チェックアイコン */
+    .pricing-card__features li::before {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%231e40af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
+      flex-shrink: 0;
+    }
+
+    /* 含まれない項目はグレーで打ち消し線 */
+    .pricing-card__features li.disabled {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .pricing-card__features li.disabled::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
+    }
+
+    /* CTAボタン（おすすめ以外はアウトライン） */
+    .pricing-card .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* レスポンシブ：タブレットで2列 */
+    @media (max-width: 768px) {
+      .pricing__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* レスポンシブ：スマホで1列 */
+    @media (max-width: 480px) {
+      .pricing__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== 実績セクション（ネイビー背景） ===== */
+    .achievements {
+      background: var(--primary-dark);
+      color: var(--white);
+    }
+
+    .achievements .section-label {
+      color: #93c5fd; /* 薄いブルー */
+    }
+
+    .achievements .section-title {
+      color: var(--white);
+    }
+
+    .achievements .section-desc {
+      color: rgba(255,255,255,.7);
+    }
+
+    /* 実績の数値カードグリッド */
+    .achievements__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .achievement-card {
+      text-align: center;
+      padding: 40px 24px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-lg);
+    }
+
+    /* カウントアップされる数値 */
+    .achievement-card__num {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .achievement-card__num span {
+      color: #93c5fd; /* 単位・接尾辞を薄い青で */
+    }
+
+    .achievement-card__label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,.65);
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== お問い合わせフォームセクション ===== */
+    .contact {
+      background: var(--surface);
+    }
+
+    .contact__inner {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact__info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .contact__info p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* 問い合わせカード（電話・メールなど） */
+    .contact__cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .contact__card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .contact__card svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--primary-light);
+      flex-shrink: 0;
+    }
+
+    .contact__card-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .contact__card-text strong {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    /* フォーム本体 */
+    .form {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .form__group {
+      margin-bottom: 20px;
+    }
+
+    .form__label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form__required {
+      color: #ef4444;
+      margin-left: 4px;
+    }
+
+    .form__input,
+    .form__textarea {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .form__input:focus,
+    .form__textarea:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+      background: var(--white);
+    }
+
+    /* バリデーションエラー時 */
+    .form__input.error,
+    .form__textarea.error {
+      border-color: #ef4444;
+    }
+
+    .form__error {
+      font-size: 0.78rem;
+      color: #ef4444;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form__error.visible {
+      display: block;
+    }
+
+    .form__textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form__submit {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+    }
+
+    /* 送信後のサンクスメッセージ */
+    .form__thanks {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .form__thanks.visible {
+      display: block;
+    }
+
+    .form__thanks-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .form__thanks-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--primary);
+    }
+
+    .form__thanks h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .form__thanks p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ===== お客様の声セクション ===== */
+    .testimonials {
+      background: var(--bg);
+    }
+
+    /* 3カラムのグリッド */
+    .testimonials__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* 各カード */
+    .testi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .testi-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* 星評価 */
+    .testi-card__stars {
+      color: #f59e0b;
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+
+    /* 引用テキスト */
+    .testi-card__quote {
+      font-size: 0.925rem;
+      line-height: 1.8;
+      color: var(--text);
+      flex: 1;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    /* 左の青い縦線アクセント */
+    .testi-card__quote::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--primary-light), var(--primary));
+      border-radius: 2px;
+    }
+
+    /* 顧客プロフィール行 */
+    .testi-card__person {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* 顔写真 */
+    .testi-card__avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .testi-card__name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .testi-card__role {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* レスポンシブ：タブレットは2列 */
+    @media (max-width: 768px) {
+      .testimonials__grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* レスポンシブ：スマホは1列 */
+    @media (max-width: 480px) {
+      .testimonials__grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== フッター ===== */
+    .footer {
+      background: var(--text);
+      color: rgba(255,255,255,.7);
+      padding: 56px 0 32px;
+    }
+
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    .footer__logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .footer__logo span {
+      color: #93c5fd;
+    }
+
+    .footer__tagline {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,.5);
+    }
+
+    .footer__nav {
+      display: flex;
+      gap: 60px;
+    }
+
+    .footer__nav-group h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+      margin-bottom: 16px;
+    }
+
+    .footer__nav-group ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer__nav-group a {
+      font-size: 0.9rem;
+      transition: color .2s;
+    }
+
+    .footer__nav-group a:hover {
+      color: var(--white);
+    }
+
+    .footer__bottom {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding-top: 28px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,.35);
+      text-align: center;
+    }
+
+    /* ===== フローティングチャットボット ===== */
+    .chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+    }
+
+    /* チャットを開くボタン */
+    .chat-fab__btn {
+      width: 60px;
+      height: 60px;
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(30,64,175,.4);
+      transition: transform .2s, background .2s;
+    }
+
+    .chat-fab__btn:hover {
+      transform: scale(1.08);
+      background: var(--primary-dark);
+    }
+
+    .chat-fab__btn svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--white);
+    }
+
+    /* アイコンの切り替え（開閉） */
+    .chat-fab__btn .icon-chat  { display: block; }
+    .chat-fab__btn .icon-close { display: none;  }
+
+    .chat-fab__btn.open .icon-chat  { display: none;  }
+    .chat-fab__btn.open .icon-close { display: block; }
+
+    /* 未読バッジ */
+    .chat-fab__badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 18px;
+      height: 18px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--white);
+      pointer-events: none;
+    }
+
+    .chat-fab__badge.hidden {
+      display: none;
+    }
+
+    /* チャットウィンドウ */
+    .chat-window {
+      position: absolute;
+      bottom: 76px;
+      right: 0;
+      width: 340px;
+      height: 480px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border);
+
+      /* 開閉アニメーション */
+      transform-origin: bottom right;
+      transform: scale(0.85) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+    }
+
+    .chat-window.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* チャットヘッダー */
+    .chat-header {
+      background: var(--primary);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* アシスタントのアイコン */
+    .chat-header__avatar {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .chat-header__avatar svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--white);
+    }
+
+    .chat-header__info h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .chat-header__info p {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,.7);
+    }
+
+    /* メッセージエリア */
+    .chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* スクロールバーのカスタマイズ */
+    .chat-body::-webkit-scrollbar { width: 4px; }
+    .chat-body::-webkit-scrollbar-track { background: transparent; }
+    .chat-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* ボットのメッセージ */
+    .chat-msg {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .chat-msg--bot {
+      justify-content: flex-start;
+    }
+
+    .chat-msg--user {
+      justify-content: flex-end;
+    }
+
+    .chat-msg__bubble {
+      max-width: 76%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* ボット側のバブル */
+    .chat-msg--bot .chat-msg__bubble {
+      background: var(--surface);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+
+    /* ユーザー側のバブル */
+    .chat-msg--user .chat-msg__bubble {
+      background: var(--primary);
+      color: var(--white);
+      border-bottom-right-radius: 4px;
+    }
+
+    /* FAQ選択肢ボタンのラッパー */
+    .chat-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 4px;
+    }
+
+    /* 個々の選択肢ボタン */
+    .chat-choice {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 8px 14px;
+      background: var(--white);
+      border: 1px solid var(--primary-light);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+
+    .chat-choice:hover {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    /* 選択済みは押せない状態に */
+    .chat-choices.disabled .chat-choice {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 「入力中」の点滅インジケーター */
+    .chat-typing {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border-radius: 16px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
+    }
+
+    .chat-typing span {
+      width: 6px;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: typing 1.2s ease-in-out infinite;
+    }
+
+    .chat-typing span:nth-child(2) { animation-delay: .2s; }
+    .chat-typing span:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(1);   opacity: .5; }
+      40%            { transform: scale(1.3); opacity: 1;  }
+    }
+
+    /* ===== スクロールアニメーション用クラス ===== */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== レスポンシブ：タブレット（～768px） ===== */
+    @media (max-width: 768px) {
+      .section { padding: 72px 0; }
+
+      /* ナビ：タブレット以下でメインナビを隠してハンバーガーを表示 */
+      .nav__right  { display: none; }
+      .nav__hamburger { display: flex; }
+
+      /* ヒーロー：タブレットは1カラムに */
+      .hero__inner { grid-template-columns: 1fr; gap: 48px; padding-top: 88px; min-height: auto; padding-bottom: 80px; }
+      .hero__visual { order: -1; max-width: 480px; margin: 0 auto; }
+      .hero__title { font-size: clamp(2.4rem, 9vw, 3.6rem); }
+
+      /* サービスグリッドを2列に */
+      .services__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* 実績グリッドを2列に */
+      .achievements__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* お問い合わせを1列に */
+      .contact__inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      /* フッターを縦積みに */
+      .footer__inner {
+        flex-direction: column;
+      }
+
+      .footer__nav {
+        gap: 40px;
+      }
+    }
+
+    /* ===== レスポンシブ：スマホ（～480px） ===== */
+    @media (max-width: 480px) {
+      .section { padding: 56px 0; }
+      .section-head { margin-bottom: 36px; }
+
+      /* ヒーロー */
+      .hero__actions { flex-direction: column; }
+      .btn { justify-content: center; min-height: 44px; } /* タップターゲット確保 */
+
+      /* サービスを1列に */
+      .services__grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* 実績を1列に */
+      .achievements__grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* フォーム */
+      .form { padding: 24px 20px; }
+
+      /* フッターナビを縦積みに */
+      .footer__nav { flex-direction: column; gap: 32px; }
+
+      /* チャットウィンドウをほぼ全画面に */
+      .chat-window {
+        width: calc(100vw - 24px);
+        right: -4px;
+        height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ナビゲーション（OLCスタイル） ===== -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <div class="nav__inner">
+
+        <!-- ロゴ（左・縦中央） -->
+        <a href="#" class="nav__logo">
+          <div class="nav__logo-icon">
+            <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <div class="nav__logo-text">
+            <span class="logo-en">TAMOTO</span>
+            <span class="logo-ja">株式会社TAMOTO</span>
+          </div>
+        </a>
+
+        <!-- 右カラム -->
+        <div class="nav__right">
+
+          <!-- 上段：ユーティリティ（Language ∨ ｜ 検索） -->
+          <div class="nav__utility">
+            <button class="nav__util-btn">
+              <!-- 地球アイコン -->
+              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+              </svg>
+              Language
+              <!-- シェブロン -->
+              <svg fill="none" stroke-width="2.5" viewBox="0 0 24 24" width="10" height="10">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <button class="nav__util-btn">
+              <!-- 検索アイコン -->
+              <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/>
+                <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+              </svg>
+              検索
+            </button>
+          </div>
+
+          <!-- 下段：メインナビゲーション -->
+          <nav>
+            <ul class="nav__menu">
+
+              <!-- サービス（ドロップダウン付き） -->
+              <li>
+                <a href="#services">
+                  サービス
+                  <svg class="nav__chevron" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </a>
+                <ul class="nav__dropdown">
+                  <li><a href="#services">Webシステム開発</a></li>
+                  <li><a href="#services">AI・データ活用</a></li>
+                  <li><a href="#services">UX / UIデザイン</a></li>
+                  <li><a href="#services">クラウド構築・運用</a></li>
+                  <li><a href="#services">ITコンサルティング</a></li>
+                  <li><a href="#services">セキュリティ対策</a></li>
+                </ul>
+              </li>
+
+              <!-- 料金プラン -->
+              <li><a href="#pricing">料金プラン</a></li>
+
+              <!-- 実績（ドロップダウン付き） -->
+              <li>
+                <a href="#achievements">
+                  実績・お客様の声
+                  <svg class="nav__chevron" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </a>
+                <ul class="nav__dropdown">
+                  <li><a href="#achievements">数字で見る実績</a></li>
+                  <li><a href="#testimonials">お客様の声</a></li>
+                </ul>
+              </li>
+
+              <!-- 会社情報 -->
+              <li><a href="#company">会社情報</a></li>
+
+              <!-- お問い合わせ -->
+              <li><a href="#contact">お問い合わせ</a></li>
+
+              <!-- 無料相談CTA -->
+              <li class="nav__item--cta"><a href="#contact">無料相談</a></li>
+
+            </ul>
+          </nav>
+        </div>
+
+        <!-- ハンバーガーボタン（モバイル） -->
+        <button class="nav__hamburger" id="hamburger" aria-label="メニューを開く">
+          <span></span><span></span><span></span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- モバイルドロワーメニュー -->
+  <nav class="nav__drawer" id="drawer">
+    <!-- ドロワー内ユーティリティ -->
+    <div class="nav__drawer-utility">
+      <a href="#">🌐 Language</a>
+      <a href="#">🔍 検索</a>
+    </div>
+    <!-- ドロワー内ナビリンク -->
+    <a href="#services">サービス</a>
+    <a href="#pricing">料金プラン</a>
+    <a href="#achievements">実績</a>
+    <a href="#testimonials">お客様の声</a>
+    <a href="#company">会社情報</a>
+    <a href="#contact">お問い合わせ</a>
+    <a href="#contact" class="drawer-cta">無料相談</a>
+  </nav>
+
+
+  <!-- ===== ヒーローセクション ===== -->
+  <section class="hero" id="hero">
+    <!-- 装飾の幾何学図形 -->
+    <div class="hero__shape hero__shape--1"></div>
+    <div class="hero__shape hero__shape--2"></div>
+
+    <div class="container">
+      <div class="hero__inner">
+
+        <!-- 左カラム：テキストエリア -->
+        <div class="hero__content">
+          <!-- バッジ -->
+          <div class="hero__badge">2024年 最新サービス開始</div>
+
+          <!-- メインタイトル -->
+          <h1 class="hero__title">
+            <em>不可能</em>を可能に。
+          </h1>
+
+          <!-- サブテキスト -->
+          <p class="hero__sub">
+            私たちは、お客様のビジネス課題をテクノロジーとクリエイティビティで解決します。
+            あなたの成長を、最短距離で実現するパートナーです。
+          </p>
+
+          <!-- CTAボタン -->
+          <div class="hero__actions">
+            <a href="#contact" class="btn btn--primary">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
+              </svg>
+              無料で相談する
+            </a>
+            <a href="#services" class="btn btn--outline">サービスを見る</a>
+          </div>
+        </div>
+
+        <!-- 右カラム：笑顔の写真 -->
+        <div class="hero__visual">
+          <div class="hero__img-wrap">
+            <!-- 笑顔のビジネスチーム写真（Unsplash） -->
+            <img
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=85&auto=format&fit=crop"
+              alt="笑顔で働くビジネスチーム"
+              loading="eager"
+            />
+          </div>
+
+          <!-- 左上：星評価バブル -->
+          <div class="hero__img-badge2">
+            <span class="stars">★★★★★</span>
+            <span>顧客満足度 98%</span>
+          </div>
+
+          <!-- 右下：実績バブル -->
+          <div class="hero__img-badge">
+            <div class="hero__img-badge-icon">
+              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <div class="hero__img-badge-text">
+              <strong>300社+</strong>
+              <span>導入実績</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- スクロール誘導 -->
+    <div class="hero__scroll">
+      <span>SCROLL</span>
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ===== 会社情報パネルセクション ===== -->
+  <div class="about-panels" id="company">
+
+    <!-- 左パネル：Message / トップメッセージ -->
+    <a class="about-panel" href="#contact">
+      <img
+        class="about-panel__img"
+        src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=85&auto=format&fit=crop"
+        alt="代表メッセージ"
+      />
+      <div class="about-panel__body">
+        <div class="about-panel__en">Message</div>
+        <div class="about-panel__ja">トップメッセージ</div>
+        <span class="about-panel__btn">
+          トップメッセージ
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- 右パネル：Company / 会社情報 -->
+    <a class="about-panel" href="#contact">
+      <img
+        class="about-panel__img"
+        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=85&auto=format&fit=crop"
+        alt="会社情報"
+      />
+      <div class="about-panel__body">
+        <div class="about-panel__en">Company</div>
+        <div class="about-panel__ja">会社情報</div>
+        <span class="about-panel__btn">
+          会社情報
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+
+  </div>
+
+
+  <!-- ===== サービスセクション ===== -->
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="section-head fade-up">
+        <span class="section-label">Our Services</span>
+        <h2 class="section-title">私たちのサービス</h2>
+        <p class="section-desc">
+          お客様のあらゆる課題に対応できる、幅広いソリューションをご提供します。
+        </p>
+      </div>
+
+      <div class="services__grid">
+        <!-- カード 1 -->
+        <div class="service-card fade-up">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">Webシステム開発</h3>
+          <p class="service-card__desc">
+            要件定義から設計・開発・運用まで一貫対応。
+            スケーラブルで保守性の高いシステムを構築します。
+          </p>
+        </div>
+
+        <!-- カード 2 -->
+        <div class="service-card fade-up" style="transition-delay:.1s">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">AI・データ活用</h3>
+          <p class="service-card__desc">
+            機械学習・生成AIをビジネスに組み込み、
+            業務効率化・意思決定の高度化を実現します。
+          </p>
+        </div>
+
+        <!-- カード 3 -->
+        <div class="service-card fade-up" style="transition-delay:.2s">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">UX / UIデザイン</h3>
+          <p class="service-card__desc">
+            ユーザー調査からプロトタイプ、実装まで。
+            使いやすく・美しいデジタル体験を設計します。
+          </p>
+        </div>
+
+        <!-- カード 4 -->
+        <div class="service-card fade-up" style="transition-delay:.3s">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">クラウド構築・運用</h3>
+          <p class="service-card__desc">
+            AWS・GCP・Azureを活用したクラウドインフラの
+            設計・構築・コスト最適化を支援します。
+          </p>
+        </div>
+
+        <!-- カード 5 -->
+        <div class="service-card fade-up" style="transition-delay:.4s">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 18h.01M8 21h8a2 2 0 002-2v-2a6 6 0 10-12 0v2a2 2 0 002 2zM12 3a4 4 0 100 8 4 4 0 000-8z"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">ITコンサルティング</h3>
+          <p class="service-card__desc">
+            DX推進・IT戦略策定・ベンダー選定など、
+            経営視点でのITアドバイザリーを提供します。
+          </p>
+        </div>
+
+        <!-- カード 6 -->
+        <div class="service-card fade-up" style="transition-delay:.5s">
+          <div class="service-card__icon">
+            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </div>
+          <h3 class="service-card__title">セキュリティ対策</h3>
+          <p class="service-card__desc">
+            脆弱性診断・セキュリティ設計・インシデント対応まで、
+            安全なシステム運用をサポートします。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 料金表セクション ===== -->
+  <section class="section pricing" id="pricing">
+    <div class="container">
+      <div class="section-head fade-up">
+        <span class="section-label">Pricing</span>
+        <h2 class="section-title">料金プラン</h2>
+        <p class="section-desc">
+          ビジネスの規模やニーズに合わせて選べる3つのプランをご用意しています。
+        </p>
+      </div>
+
+      <div class="pricing__grid">
+
+        <!-- ライトプラン -->
+        <div class="pricing-card fade-up">
+          <div class="pricing-card__name">Light</div>
+          <div class="pricing-card__price">
+            <sup>¥</sup>50,000<sub>/月</sub>
+          </div>
+          <p class="pricing-card__desc">スタートアップ・小規模事業者向け</p>
+          <div class="pricing-card__divider"></div>
+          <ul class="pricing-card__features">
+            <li>Webサイト制作（5ページまで）</li>
+            <li>レスポンシブ対応</li>
+            <li>月1回のコンテンツ更新</li>
+            <li>メールサポート</li>
+            <li class="disabled">専任担当者アサイン</li>
+            <li class="disabled">カスタム機能開発</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">プランを相談する</a>
+        </div>
+
+        <!-- スタンダードプラン（おすすめ） -->
+        <div class="pricing-card pricing-card--featured fade-up" style="transition-delay:.1s">
+          <div class="pricing-card__badge">✦ おすすめ</div>
+          <div class="pricing-card__name">Standard</div>
+          <div class="pricing-card__price">
+            <sup>¥</sup>150,000<sub>/月</sub>
+          </div>
+          <p class="pricing-card__desc">成長期の中小企業・本格的なDX推進に</p>
+          <div class="pricing-card__divider"></div>
+          <ul class="pricing-card__features">
+            <li>Webシステム開発</li>
+            <li>レスポンシブ対応</li>
+            <li>月4回のコンテンツ更新</li>
+            <li>チャット・電話サポート</li>
+            <li>専任担当者アサイン</li>
+            <li class="disabled">カスタム機能開発</li>
+          </ul>
+          <a href="#contact" class="btn btn--primary">プランを相談する</a>
+        </div>
+
+        <!-- エンタープライズプラン -->
+        <div class="pricing-card fade-up" style="transition-delay:.2s">
+          <div class="pricing-card__name">Enterprise</div>
+          <div class="pricing-card__price" style="font-size:2rem">
+            お問い合わせ
+          </div>
+          <p class="pricing-card__desc">大企業・特定要件のカスタム開発向け</p>
+          <div class="pricing-card__divider"></div>
+          <ul class="pricing-card__features">
+            <li>フルカスタム開発</li>
+            <li>レスポンシブ対応</li>
+            <li>無制限コンテンツ更新</li>
+            <li>24時間サポート対応</li>
+            <li>専任担当者アサイン</li>
+            <li>カスタム機能開発</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">詳細を問い合わせる</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 実績セクション ===== -->
+  <section class="section achievements" id="achievements">
+    <div class="container">
+      <div class="section-head fade-up">
+        <span class="section-label">Our Track Record</span>
+        <h2 class="section-title">実績</h2>
+        <p class="section-desc" style="color:rgba(255,255,255,.65)">
+          多くのお客様に選ばれ、確かな成果を積み重ねてきました。
+        </p>
+      </div>
+
+      <div class="achievements__grid">
+        <!-- 数値カード 1 -->
+        <div class="achievement-card fade-up">
+          <div class="achievement-card__num">
+            <span class="count-up" data-target="300">0</span><span>社+</span>
+          </div>
+          <div class="achievement-card__label">導入実績</div>
+        </div>
+
+        <!-- 数値カード 2 -->
+        <div class="achievement-card fade-up" style="transition-delay:.1s">
+          <div class="achievement-card__num">
+            <span class="count-up" data-target="98">0</span><span>%</span>
+          </div>
+          <div class="achievement-card__label">顧客満足度</div>
+        </div>
+
+        <!-- 数値カード 3 -->
+        <div class="achievement-card fade-up" style="transition-delay:.2s">
+          <div class="achievement-card__num">
+            <span class="count-up" data-target="15">0</span><span>年</span>
+          </div>
+          <div class="achievement-card__label">設立からの歴史</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== お客様の声セクション ===== -->
+  <section class="section testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-head fade-up">
+        <span class="section-label">Testimonials</span>
+        <h2 class="section-title">お客様の声</h2>
+        <p class="section-desc">
+          ご導入いただいたお客様から、嬉しいお声をいただいています。
+        </p>
+      </div>
+
+      <div class="testimonials__grid">
+
+        <!-- カード 1 -->
+        <div class="testi-card fade-up">
+          <div class="testi-card__stars">★★★★★</div>
+          <p class="testi-card__quote">
+            導入後わずか3ヶ月で業務効率が40%向上しました。
+            チームの提案力と技術力の高さに驚かされています。
+            今では欠かせないパートナーです。
+          </p>
+          <div class="testi-card__person">
+            <img
+              class="testi-card__avatar"
+              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&q=80&auto=format&fit=crop&crop=face"
+              alt="田中 誠さん"
+            />
+            <div>
+              <div class="testi-card__name">田中 誠</div>
+              <div class="testi-card__role">代表取締役 / 株式会社TAMOTO商事</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード 2 -->
+        <div class="testi-card fade-up" style="transition-delay:.1s">
+          <div class="testi-card__stars">★★★★★</div>
+          <p class="testi-card__quote">
+            AIシステムの導入により、月次レポート作成時間を
+            従来の8時間から1時間に短縮できました。
+            丁寧なサポートで安心して任せられます。
+          </p>
+          <div class="testi-card__person">
+            <img
+              class="testi-card__avatar"
+              src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80&auto=format&fit=crop&crop=face"
+              alt="鈴木 花子さん"
+            />
+            <div>
+              <div class="testi-card__name">鈴木 花子</div>
+              <div class="testi-card__role">マーケティング部長 / TAMOTOテクノロジー</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード 3 -->
+        <div class="testi-card fade-up" style="transition-delay:.2s">
+          <div class="testi-card__stars">★★★★★</div>
+          <p class="testi-card__quote">
+            リニューアルしたWebサイトのコンバージョン率が
+            2.5倍になりました。デザインへのこだわりと
+            レスポンシブ対応の精度に大変満足しています。
+          </p>
+          <div class="testi-card__person">
+            <img
+              class="testi-card__avatar"
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&auto=format&fit=crop&crop=face"
+              alt="山本 健太さん"
+            />
+            <div>
+              <div class="testi-card__name">山本 健太</div>
+              <div class="testi-card__role">事業開発責任者 / TAMOTOグループ</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== お問い合わせセクション ===== -->
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="contact__inner">
+        <!-- 左：情報エリア -->
+        <div class="fade-up">
+          <span class="section-label">Contact</span>
+          <h2 class="section-title">お問い合わせ</h2>
+          <p class="section-desc">
+            サービスに関するご質問、お見積もりのご依頼など、
+            お気軽にお問い合わせください。
+            通常1〜2営業日以内にご返信します。
+          </p>
+
+          <div class="contact__cards">
+            <!-- メール -->
+            <div class="contact__card">
+              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              <div class="contact__card-text">
+                <strong>info@example.co.jp</strong>
+                メールでのお問い合わせ
+              </div>
+            </div>
+
+            <!-- 電話 -->
+            <div class="contact__card">
+              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+              </svg>
+              <div class="contact__card-text">
+                <strong>03-0000-0000</strong>
+                平日 9:00〜18:00
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：フォームエリア -->
+        <div class="fade-up" style="transition-delay:.15s">
+          <div class="form" id="contact-form-wrap">
+            <!-- フォーム本体 -->
+            <form id="contact-form" novalidate>
+              <div class="form__group">
+                <label class="form__label" for="company">
+                  会社名<span class="form__required">*</span>
+                </label>
+                <input class="form__input" type="text" id="company" name="company" placeholder="株式会社TAMOTO" />
+                <p class="form__error" id="company-err">会社名を入力してください。</p>
+              </div>
+
+              <div class="form__group">
+                <label class="form__label" for="name">
+                  お名前<span class="form__required">*</span>
+                </label>
+                <input class="form__input" type="text" id="name" name="name" placeholder="山田 太郎" />
+                <p class="form__error" id="name-err">お名前を入力してください。</p>
+              </div>
+
+              <div class="form__group">
+                <label class="form__label" for="email">
+                  メールアドレス<span class="form__required">*</span>
+                </label>
+                <input class="form__input" type="email" id="email" name="email" placeholder="example@company.co.jp" />
+                <p class="form__error" id="email-err">有効なメールアドレスを入力してください。</p>
+              </div>
+
+              <div class="form__group">
+                <label class="form__label" for="message">
+                  お問い合わせ内容<span class="form__required">*</span>
+                </label>
+                <textarea class="form__textarea" id="message" name="message" placeholder="ご相談内容をご記入ください。"></textarea>
+                <p class="form__error" id="message-err">お問い合わせ内容を入力してください。</p>
+              </div>
+
+              <button type="submit" class="btn btn--primary form__submit">
+                送信する
+              </button>
+            </form>
+
+            <!-- 送信後サンクスメッセージ -->
+            <div class="form__thanks" id="form-thanks">
+              <div class="form__thanks-icon">
+                <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <h3>送信が完了しました！</h3>
+              <p>お問い合わせありがとうございます。<br />1〜2営業日以内にご連絡いたします。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== フッター ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <!-- 左：ロゴとタグライン -->
+        <div>
+          <div class="footer__logo">株式会社<span>TAMOTO</span></div>
+          <div class="footer__tagline">不可能を可能に。</div>
+        </div>
+
+        <!-- 右：ナビリンク -->
+        <nav class="footer__nav">
+          <div class="footer__nav-group">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="#services">Webシステム開発</a></li>
+              <li><a href="#services">AI・データ活用</a></li>
+              <li><a href="#services">UX/UIデザイン</a></li>
+              <li><a href="#services">クラウド構築</a></li>
+            </ul>
+          </div>
+          <div class="footer__nav-group">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#pricing">料金</a></li>
+              <li><a href="#achievements">実績</a></li>
+              <li><a href="#contact">お問い合わせ</a></li>
+              <li><a href="#">プライバシーポリシー</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="footer__bottom">
+        &copy; 2024 株式会社TAMOTO. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ===== フローティングチャットボット ===== -->
+  <div class="chat-fab" id="chat-fab">
+    <!-- 開閉ボタン -->
+    <button class="chat-fab__btn" id="chat-toggle" aria-label="チャットを開く">
+      <!-- チャットアイコン -->
+      <svg class="icon-chat" fill="none" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+      </svg>
+      <!-- 閉じるアイコン -->
+      <svg class="icon-close" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+
+    <!-- 未読バッジ -->
+    <div class="chat-fab__badge" id="chat-badge">1</div>
+
+    <!-- チャットウィンドウ -->
+    <div class="chat-window" id="chat-window">
+      <!-- ヘッダー -->
+      <div class="chat-header">
+        <div class="chat-header__avatar">
+          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="chat-header__info">
+          <h3>TAMOTOサポート</h3>
+          <p>通常1〜2営業日以内に返信します</p>
+        </div>
+      </div>
+
+      <!-- メッセージ表示エリア -->
+      <div class="chat-body" id="chat-body"></div>
+    </div>
+  </div>
+
+
+  <!-- ===== JavaScript ===== -->
+  <script>
+    /* ==========================================
+       ナビゲーション：スクロールで背景を付与
+    ========================================== */
+    const nav = document.getElementById('nav');
+    let lastScrollY = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+
+      /* 一定量スクロールしたら背景・影を付与 */
+      nav.classList.toggle('scrolled', currentY > 40);
+
+      /* 下スクロール かつ トップから80px以上離れたら隠す */
+      if (currentY > lastScrollY && currentY > 80) {
+        nav.classList.add('hidden');
+      } else {
+        /* 上スクロールで再表示 */
+        nav.classList.remove('hidden');
+      }
+
+      lastScrollY = currentY;
+    }, { passive: true });
+
+
+    /* ==========================================
+       ハンバーガーメニュー
+    ========================================== */
+    const hamburger = document.getElementById('hamburger');
+    const drawer    = document.getElementById('drawer');
+
+    // ハンバーガーボタンのクリックで開閉
+    hamburger.addEventListener('click', () => {
+      const isOpen = hamburger.classList.toggle('open');
+      drawer.classList.toggle('open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // ドロワー内のリンクをクリックしたら閉じる
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+
+    /* ==========================================
+       スクロールアニメーション（Intersection Observer）
+    ========================================== */
+    const fadeEls = document.querySelectorAll('.fade-up');
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObserver.unobserve(entry.target); // 一度表示したら監視解除
+        }
+      });
+    }, { threshold: 0.12 });
+
+    fadeEls.forEach(el => fadeObserver.observe(el));
+
+
+    /* ==========================================
+       カウントアップアニメーション
+    ========================================== */
+    const countEls = document.querySelectorAll('.count-up');
+
+    const countObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        const el     = entry.target;
+        const target = parseInt(el.dataset.target, 10);
+        const duration = 1800; // アニメーション時間（ms）
+        const start    = performance.now();
+
+        // easeOutQuart のイージング関数
+        const easeOut = t => 1 - Math.pow(1 - t, 4);
+
+        const tick = (now) => {
+          const elapsed  = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          el.textContent = Math.floor(easeOut(progress) * target);
+
+          if (progress < 1) requestAnimationFrame(tick);
+          else el.textContent = target; // 最終値を確定
+        };
+
+        requestAnimationFrame(tick);
+        countObserver.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+
+    countEls.forEach(el => countObserver.observe(el));
+
+
+    /* ==========================================
+       お問い合わせフォームのバリデーション
+    ========================================== */
+    const form      = document.getElementById('contact-form');
+    const formThanks = document.getElementById('form-thanks');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      let valid = true;
+
+      // 各フィールドのバリデーション
+      const fields = [
+        { id: 'company', errId: 'company-err', check: v => v.trim() !== '' },
+        { id: 'name',    errId: 'name-err',    check: v => v.trim() !== '' },
+        {
+          id: 'email', errId: 'email-err',
+          // 簡易メールアドレス形式チェック
+          check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
+        },
+        { id: 'message', errId: 'message-err', check: v => v.trim() !== '' },
+      ];
+
+      fields.forEach(({ id, errId, check }) => {
+        const input = document.getElementById(id);
+        const err   = document.getElementById(errId);
+        const ok    = check(input.value);
+
+        input.classList.toggle('error', !ok);
+        err.classList.toggle('visible', !ok);
+
+        if (!ok) valid = false;
+      });
+
+      if (!valid) return;
+
+      // バリデーション通過 → サンクスメッセージを表示
+      form.style.display = 'none';
+      formThanks.classList.add('visible');
+    });
+
+    // 入力時にエラー表示をリセット
+    form.querySelectorAll('.form__input, .form__textarea').forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('error');
+        const err = document.getElementById(input.id + '-err');
+        if (err) err.classList.remove('visible');
+      });
+    });
+
+
+    /* ==========================================
+       チャットボット
+    ========================================== */
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatWindow = document.getElementById('chat-window');
+    const chatBody   = document.getElementById('chat-body');
+    const chatBadge  = document.getElementById('chat-badge');
+
+    // チャットが初期化済みかどうかのフラグ
+    let chatInitialized = false;
+
+    // FAQ の定義（選択肢 → 回答）
+    const FAQ = [
+      {
+        label: '💡 サービスについて知りたい',
+        answer: 'Webシステム開発・AI活用・UXデザイン・クラウド構築・ITコンサルなど幅広くご支援しています。詳しくはページ上部の「サービス」セクションをご覧ください。',
+        scroll: '#services',
+      },
+      {
+        label: '💰 料金・見積もりについて',
+        answer: '料金はプロジェクトの規模や要件によって異なります。まずはお気軽にご相談ください。無料でのお見積もりも承っています！',
+        scroll: null,
+      },
+      {
+        label: '📩 お問い合わせしたい',
+        answer: 'ページ下部のお問い合わせフォームからご連絡いただけます。ご案内します！',
+        scroll: '#contact',
+      },
+      {
+        label: '❓ その他のご質問',
+        answer: '詳細についてはお問い合わせフォームよりお気軽にご連絡ください。担当者が丁寧にご対応します。',
+        scroll: null,
+      },
+    ];
+
+    // チャットを開閉する
+    chatToggle.addEventListener('click', () => {
+      const isOpen = chatToggle.classList.toggle('open');
+      chatWindow.classList.toggle('open', isOpen);
+      chatBadge.classList.add('hidden'); // バッジを消す
+
+      // 初回オープン時にウェルカムメッセージを表示
+      if (isOpen && !chatInitialized) {
+        chatInitialized = true;
+        initChat();
+      }
+    });
+
+    // チャット初期化：ウェルカムメッセージ＋選択肢を表示
+    function initChat() {
+      addBotMessage('こんにちは！👋 株式会社TAMOTOのサポートチャットです。何かお手伝いできますか？', true);
+    }
+
+    // ボットのメッセージを追加する
+    function addBotMessage(text, showChoices = false) {
+      // 「入力中...」インジケーターを表示
+      const typing = document.createElement('div');
+      typing.className = 'chat-msg chat-msg--bot';
+      typing.innerHTML = `
+        <div class="chat-typing">
+          <span></span><span></span><span></span>
+        </div>`;
+      chatBody.appendChild(typing);
+      scrollChat();
+
+      // 少し遅らせてメッセージを表示（自然な応答感を演出）
+      setTimeout(() => {
+        typing.remove();
+
+        // メッセージバブルを追加
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg chat-msg--bot';
+        msg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
+        chatBody.appendChild(msg);
+
+        // 選択肢ボタンを追加
+        if (showChoices) {
+          const choices = document.createElement('div');
+          choices.className = 'chat-choices';
+
+          FAQ.forEach(faq => {
+            const btn = document.createElement('button');
+            btn.className = 'chat-choice';
+            btn.textContent = faq.label;
+
+            btn.addEventListener('click', () => {
+              // 選択肢を押せなくする
+              choices.classList.add('disabled');
+
+              // ユーザー側のメッセージとして選択内容を表示
+              addUserMessage(faq.label);
+
+              // ボットの回答を表示
+              setTimeout(() => {
+                addBotMessage(faq.answer, false);
+
+                // スクロール先がある場合はスクロール後に再度選択肢を表示
+                if (faq.scroll) {
+                  setTimeout(() => {
+                    document.querySelector(faq.scroll)?.scrollIntoView({ behavior: 'smooth' });
+                    addBotMessage('他にご質問はありますか？', true);
+                  }, 600);
+                } else {
+                  setTimeout(() => addBotMessage('他にご質問はありますか？', true), 800);
+                }
+              }, 600);
+            });
+
+            choices.appendChild(btn);
+          });
+
+          chatBody.appendChild(choices);
+        }
+
+        scrollChat();
+      }, 700);
+    }
+
+    // ユーザーのメッセージを追加する
+    function addUserMessage(text) {
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg chat-msg--user';
+      msg.innerHTML = `<div class="chat-msg__bubble">${text}</div>`;
+      chatBody.appendChild(msg);
+      scrollChat();
+    }
+
+    // チャットエリアを最下部にスクロール
+    function scrollChat() {
+      requestAnimationFrame(() => {
+        chatBody.scrollTop = chatBody.scrollHeight;
+      });
+    }
+
+  </script>
+</body>
+</html>
