@@ -3,3286 +3,1842 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>株式会社TAMOTO | AIチャットボット開発</title>
+  <title>MAISON KUROE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    /* ===== リセット & 基本設定 ===== */
+    /* リセット & 基本設定 */
     *, *::before, *::after {
-      box-sizing: bx;
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     :root {
-      --bg:            #ffffff;
-      --surface:       #f8fafc;
-      --border:        #e2e8f0;
-      --primary:       #1e40af;       /* ネイビーブルー */
-      --primary-light: #3b82f6;       /* アクセントブルー */
-      --primary-dark:  #1e3a8a;       /* ダークネイビー */
-      --text:          #111827;
-      --muted:         #6b7280;
-      --white:         #ffffff;
-
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 20px;
-
-      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
-      --shadow-md: 0 4px 16px rgba(0,0,0,.10);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,.12);
+      --black:      #0c0c0c;
+      --cream:      #f4efe8;
+      --gold:       #c9a96e;
+      --gray:       #8c8c8c;
+      --light-gray: #e8e3dc;
+      --white:      #ffffff;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.7;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--black);
       overflow-x: hidden;
     }
 
-    img { max-width: 100%; display: block; }
-
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* ===== ナビゲーション ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      transition: background 0.4s, padding 0.4s;
     }
 
-    /* ===== ユーティリティ ===== */
-    .container {
-      max-width: 1120px;
-      margin: 0 auto;
+    nav.scrolled {
+      background: rgba(244, 239, 232, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 16px 48px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      color: var(--white);
+      transition: color 0.4s;
+    }
+
+    nav.scrolled .nav-logo { color: var(--black); }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--white);
+      transition: color 0.4s, opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 0.6; }
+    nav.scrolled .nav-links a { color: var(--black); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--white);
+      transition: background 0.4s;
+    }
+
+    nav.scrolled .hamburger span { background: var(--black); }
+
+    /* ===== ヒーロー ===== */
+    #hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ヒーロー背景画像 */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1920&q=90&fit=crop&crop=center');
+      background-size: cover;
+      background-position: center top;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+
+    #hero:hover .hero-bg { transform: scale(1.08); }
+
+    /* 暗めのオーバーレイ */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.65) 0%,
+        rgba(0,0,0,0.45) 50%,
+        rgba(0,0,0,0.75) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
       padding: 0 24px;
     }
 
-    /* セクション共通の上下余白 */
-    .section {
-      padding: 96px 0;
+    .hero-subtitle {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      text-indent: 0.4em; /* letter-spacing末尾ずれ補正 */
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 0.3s forwards;
     }
 
-    /* セクション見出し */
-    .section-label {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 10vw, 120px);
+      font-weight: 300;
       letter-spacing: 0.15em;
+      text-indent: 0.15em; /* letter-spacing末尾ずれ補正 */
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1.2s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-desc {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em; /* letter-spacing末尾ずれ補正 */
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 0.8s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-indent: 0.3em; /* letter-spacing末尾ずれ補正 */
       text-transform: uppercase;
-      color: var(--primary-light);
-      margin-bottom: 12px;
+      text-decoration: none;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 16px 40px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 1s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--black);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+
+    .hero-scroll span {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      /* text-indentは使わず、親要素のleft:50%+translateXで正確にセンタリング */
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ===== コレクション ===== */
+    #collection {
+      padding: 120px 48px;
+      background: var(--cream);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
     }
 
     .section-title {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.25;
-      margin-bottom: 16px;
-    }
-
-    .section-desc {
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 560px;
-    }
-
-    .section-head {
-      margin-bottom: 56px;
-    }
-
-    /* ===== ナビゲーション（OLCスタイル：ロゴ左＋右2段） ===== */
-    .nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      transition: box-shadow .3s, transform .35s ease;
-    }
-
-    .nav.scrolled {
-      box-shadow: 0 2px 12px rgba(0,0,0,.08);
-    }
-
-    /* スクロール下方向で画面外に退場 */
-    .nav.hidden {
-      transform: translateY(-100%);
-    }
-
-    /* ヘッダー全体のフレックスコンテナ */
-    .nav__inner {
-      display: flex;
-      align-items: stretch;
-      justify-content: space-between;
-      min-height: 64px; /* モバイル時の最低高さを保証 */
-    }
-
-    /* ===== ロゴエリア ===== */
-    .nav__logo {
-      display: flex;
-      align-items: center;
-      padding: 12px 0 12px 4px; /* 縦paddingでモバイルナビの高さを確保 */
-      text-decoration: none;
-    }
-
-    /* ロゴのアイコン部分 */
-    .nav__logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-
-    .nav__logo-icon svg {
-      width: 18px;
-      height: 18px;
-      stroke: #fff;
-    }
-
-    /* ロゴのテキスト部分 */
-    .nav__logo-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-
-    .nav__logo-text .logo-en {
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      color: var(--primary-dark);
-    }
-
-    .nav__logo-text .logo-ja {
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-    }
-
-    /* ===== 右カラム：ユーティリティ行 ＋ ナビ行 ===== */
-    .nav__right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    /* 上段：Language ∨ ｜ 検索 */
-    .nav__utility {
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      height: 32px;
-    }
-
-    .nav__util-btn {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 0 16px;
-      height: 100%;
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--muted);
-      background: none;
-      border: none;
-      border-left: 1px solid var(--border);
-      cursor: pointer;
-      transition: color .2s, background .2s;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .nav__util-btn:first-child {
-      border-left: none;
-    }
-
-    .nav__util-btn:hover {
-      color: var(--primary);
-      background: var(--surface);
-    }
-
-    .nav__util-btn svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
-
-    /* 下段：メインナビゲーション */
-    .nav__menu {
-      display: flex;
-      align-items: stretch;
-      list-style: none;
-      height: 52px;
-    }
-
-    .nav__menu > li {
-      position: relative;
-      display: flex;
-      align-items: stretch;
-    }
-
-    /* 各ナビリンク */
-    .nav__menu > li > a {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0 18px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text);
-      border-left: 1px solid var(--border);
-      white-space: nowrap;
-      transition: color .2s, background .2s;
-      text-decoration: none;
-    }
-
-    .nav__menu > li:first-child > a {
-      border-left: none;
-    }
-
-    .nav__menu > li > a:hover {
-      color: var(--primary);
-      background: var(--surface);
-    }
-
-    /* ドロップダウン矢印（∨） */
-    .nav__chevron {
-      width: 12px;
-      height: 12px;
-      stroke: currentColor;
-      transition: transform .2s;
-      flex-shrink: 0;
-    }
-
-    .nav__menu > li:hover .nav__chevron {
-      transform: rotate(180deg);
-    }
-
-    /* 無料相談CTAボタン（最右端） */
-    .nav__menu > li.nav__item--cta > a {
-      background: var(--primary);
-      color: var(--white);
-      padding: 0 22px;
-      font-weight: 700;
-      border-left: none;
-      margin-left: 8px;
-      transition: background .2s;
-    }
-
-    .nav__menu > li.nav__item--cta > a:hover {
-      background: var(--primary-dark);
-      color: var(--white);
-    }
-
-    /* ===== ドロップダウンメニュー ===== */
-    .nav__dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      min-width: 200px;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--primary);
-      box-shadow: var(--shadow-md);
-      list-style: none;
-      z-index: 200;
-      /* 非表示状態 */
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition: opacity .2s, transform .2s, visibility .2s;
-    }
-
-    /* ホバーでドロップダウン表示 */
-    .nav__menu > li:hover .nav__dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .nav__dropdown li a {
-      display: block;
-      padding: 11px 20px;
-      font-size: 0.85rem;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-      transition: background .15s, color .15s;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .nav__dropdown li:last-child a {
-      border-bottom: none;
-    }
-
-    .nav__dropdown li a:hover {
-      background: var(--surface);
-      color: var(--primary);
-      padding-left: 26px; /* ホバーで少し右にずれる演出 */
-    }
-
-    /* ===== ハンバーガーボタン（モバイル用） ===== */
-    .nav__hamburger {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      cursor: pointer;
-      padding: 0 16px;
-      background: none;
-      border: none;
-      border-left: 1px solid var(--border);
-      height: 100%;
-      min-width: 52px;
-      align-self: stretch;
-    }
-
-    .nav__hamburger span {
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--text);
-      border-radius: 2px;
-      transition: transform .3s, opacity .3s;
-    }
-
-    .nav__hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav__hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav__hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* ===== モバイルドロワー ===== */
-    .nav__drawer {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--white);
-      z-index: 99;
-      flex-direction: column;
-      padding-top: 80px;
-      overflow-y: auto;
-    }
-
-    .nav__drawer.open {
-      display: flex;
-    }
-
-    /* ドロワー内のリンク */
-    .nav__drawer a {
-      display: block;
-      padding: 16px 28px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-      transition: color .2s, background .2s;
-      text-decoration: none;
-    }
-
-    .nav__drawer a:hover {
-      color: var(--primary);
-      background: var(--surface);
-    }
-
-    /* ドロワー内のCTAリンク */
-    .nav__drawer a.drawer-cta {
-      margin: 24px 28px;
-      border: none;
-      background: var(--primary);
-      color: var(--white);
-      text-align: center;
-      border-radius: 999px;
-      padding: 14px 28px;
-    }
-
-    .nav__drawer a.drawer-cta:hover {
-      background: var(--primary-dark);
-      color: var(--white);
-    }
-
-    /* ドロワー内のユーティリティリンク */
-    .nav__drawer-utility {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav__drawer-utility a {
-      flex: 1;
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--muted);
-      border-bottom: none;
-      border-right: 1px solid var(--border);
-    }
-
-    .nav__drawer-utility a:last-child {
-      border-right: none;
-    }
-
-    /* ===== ヒーローセクション ===== */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-      /* 白→薄青のグラデーション背景 */
-      background: linear-gradient(140deg, #ffffff 0%, #eff6ff 55%, #dbeafe 100%);
-    }
-
-    /* 装飾用の幾何学図形 */
-    .hero__shape {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hero__shape--1 {
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(59,130,246,.12) 0%, transparent 70%);
-      top: -150px;
-      right: -100px;
-    }
-
-    .hero__shape--2 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(30,64,175,.08) 0%, transparent 70%);
-      bottom: -80px;
-      left: -80px;
-    }
-
-    /* 格子模様の装飾 */
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(30,64,175,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(30,64,175,.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-
-    /* ヒーロー内部を左右2カラムに分割 */
-    .hero__inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 80px;
-      padding-top: 108px;  /* ナビ高さ84px（ユーティリティ32px+メインナビ52px）＋余白 */
-      padding-bottom: 80px;
-      min-height: 100vh;
-    }
-
-    .hero__content {
-      /* グリッド左カラム：テキスト */
-    }
-
-    /* 右カラム：笑顔の写真エリア */
-    .hero__visual {
-      position: relative;
-    }
-
-    /* メイン写真のラッパー（装飾フレーム付き） */
-    .hero__img-wrap {
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      aspect-ratio: 4 / 5;
-    }
-
-    .hero__img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* 写真の上に重なる薄いグラデーション（下部の自然な馴染み） */
-    .hero__img-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(30,64,175,.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    /* 写真の右下に浮かぶ小さな実績バブル */
-    .hero__img-badge {
-      position: absolute;
-      bottom: -16px;
-      right: -16px;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      box-shadow: var(--shadow-md);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 2;
-    }
-
-    .hero__img-badge-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #dbeafe, #eff6ff);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .hero__img-badge-icon svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--primary);
-    }
-
-    .hero__img-badge-text strong {
-      display: block;
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .hero__img-badge-text span {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    /* 写真の左上に浮かぶ小さな評価バブル */
-    .hero__img-badge2 {
-      position: absolute;
-      top: -16px;
-      left: -16px;
-      background: var(--primary);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      box-shadow: 0 8px 24px rgba(30,64,175,.3);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      z-index: 2;
-    }
-
-    .hero__img-badge2 .stars {
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-    }
-
-    .hero__img-badge2 span {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--white);
-    }
-
-    /* ヒーローのバッジ */
-    .hero__badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(59,130,246,.1);
-      border: 1px solid rgba(59,130,246,.25);
-      color: var(--primary);
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
-      margin-bottom: 28px;
-      letter-spacing: 0.04em;
-    }
-
-    /* バッジの点滅ドット */
-    .hero__badge::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--primary-light);
-      animation: blink 2s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
-
-    .hero__title {
-      font-size: clamp(2.8rem, 7vw, 5rem); /* 最小・推奨・最大をすべて拡大 */
-      font-weight: 900;
-      letter-spacing: -0.04em;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 300;
       line-height: 1.1;
-      margin-bottom: 32px;
-      color: var(--text);
+      letter-spacing: 0.05em;
     }
 
-    /* タイトルの青いハイライト部分 */
-    .hero__title em {
-      font-style: normal;
-      color: var(--primary);
-      position: relative;
+    .section-link {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 4px;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
     }
 
-    .hero__title em::after {
-      content: '';
-      position: absolute;
-      bottom: 4px;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary-light), var(--primary));
-      border-radius: 2px;
-      opacity: 0.4;
+    .section-link:hover {
+      color: var(--gold);
+      border-color: var(--gold);
     }
 
-    .hero__sub {
-      font-size: 1.1rem;
-      color: var(--muted);
-      line-height: 1.8;
-      margin-bottom: 40px;
-      max-width: 520px;
-    }
-
-    /* CTAボタン群 */
-    .hero__actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      border: none;
-    }
-
-    .btn--primary {
-      background: var(--primary);
-      color: var(--white);
-      box-shadow: 0 4px 20px rgba(30,64,175,.3);
-    }
-
-    .btn--primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(30,64,175,.4);
-    }
-
-    .btn--outline {
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-
-    .btn--outline:hover {
-      background: var(--primary);
-      color: var(--white);
-      transform: translateY(-2px);
-    }
-
-    /* スクロール誘導矢印 */
-    .hero__scroll {
-      position: absolute;
-      bottom: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      animation: bounce 2.5s ease-in-out infinite;
-    }
-
-    .hero__scroll svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(8px); }
-    }
-
-    /* ===== 会社情報パネルセクション ===== */
-    .about-panels {
+    .collection-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
     }
 
-    /* 各パネル共通 */
-    .about-panel {
-      position: relative;
+    /* 全アイテム同じ高さに統一（span 2 削除）*/
+
+    .collection-photo {
+      aspect-ratio: 3/4;
       overflow: hidden;
-      min-height: 420px;
-      display: flex;
-      align-items: flex-end;
-      cursor: pointer;
     }
 
-    /* 背景画像 */
-    .about-panel__img {
-      position: absolute;
-      inset: 0;
+    /* コレクション写真：実際の画像 */
+    .collection-photo-inner {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      transition: transform .6s ease;
+      background-size: cover;
+      background-position: center center; /* 水平・垂直ともに中央に固定 */
+      transition: transform 0.8s ease;
     }
 
-    /* ホバーで画像をズームイン */
-    .about-panel:hover .about-panel__img {
-      transform: scale(1.05);
+    .collection-item:hover .collection-photo-inner { transform: scale(1.06); }
+
+    .collection-info { padding: 20px 0 0; }
+
+    .collection-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
     }
 
-    /* 下からのグラデーションオーバーレイ */
-    .about-panel::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(10, 20, 60, 0.15) 0%,
-        rgba(10, 20, 60, 0.65) 60%,
-        rgba(10, 20, 60, 0.85) 100%
-      );
-      transition: background .4s ease;
-    }
-
-    .about-panel:hover::after {
-      background: linear-gradient(
-        to bottom,
-        rgba(10, 20, 60, 0.2) 0%,
-        rgba(10, 20, 60, 0.72) 60%,
-        rgba(10, 20, 60, 0.9) 100%
-      );
-    }
-
-    /* テキスト・ボタンのコンテンツエリア */
-    .about-panel__body {
-      position: relative;
-      z-index: 1;
-      padding: 40px 48px;
-      width: 100%;
-    }
-
-    /* 英語ラベル（"Company" など） */
-    .about-panel__en {
-      font-size: clamp(2rem, 3.5vw, 2.8rem);
-      font-weight: 900;
-      color: var(--white);
-      letter-spacing: -0.02em;
-      line-height: 1;
-      margin-bottom: 10px;
-      /* 下線アクセント */
-      position: relative;
-      display: inline-block;
-    }
-
-    .about-panel__en::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 0;
-      width: 40px;
-      height: 3px;
-      background: var(--white);
-      border-radius: 2px;
-    }
-
-    /* 日本語サブタイトル */
-    .about-panel__ja {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-top: 18px;
-      margin-bottom: 24px;
-      letter-spacing: 0.04em;
-    }
-
-    /* ボタン */
-    .about-panel__btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--white);
-      color: var(--primary-dark);
-      font-size: 0.9rem;
-      font-weight: 700;
-      padding: 13px 24px;
-      border-radius: 999px;
-      transition: background .2s, transform .2s, box-shadow .2s;
-      text-decoration: none;
-    }
-
-    .about-panel__btn:hover {
-      background: rgba(255, 255, 255, 0.92);
-      transform: translateX(4px);
-      box-shadow: 0 6px 20px rgba(0,0,0,.25);
-    }
-
-    .about-panel__btn svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      transition: transform .2s;
-    }
-
-    .about-panel__btn:hover svg {
-      transform: translateX(3px);
-    }
-
-    /* レスポンシブ：タブレット以下は縦積み */
-    @media (max-width: 768px) {
-      .about-panels { grid-template-columns: 1fr; }
-      .about-panel  { min-height: 320px; }
-      .about-panel__body { padding: 32px 28px; }
-    }
-
-    /* ===== サービスセクション ===== */
-    .services {
-      background: var(--bg);
-    }
-
-    /* サービスカードのグリッド */
-    .services__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 36px 28px;
-      transition: transform .25s, box-shadow .25s, border-color .25s;
-    }
-
-    .service-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: rgba(59,130,246,.3);
-    }
-
-    /* サービスカードのアイコン */
-    .service-card__icon {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .service-card__icon svg {
-      width: 26px;
-      height: 26px;
-      stroke: var(--primary);
-    }
-
-    .service-card__title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .service-card__desc {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    /* ===== 料金表セクション ===== */
-    .pricing {
-      background: var(--surface);
-    }
-
-    /* 料金プランのグリッド（3列） */
-    .pricing__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      align-items: start;
-    }
-
-    /* 料金カード */
-    .pricing-card {
-      background: var(--white);
-      border: 2px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 36px 28px;
-      transition: transform .25s, box-shadow .25s;
-      position: relative;
-    }
-
-    .pricing-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    /* おすすめプランは枠線をネイビーに */
-    .pricing-card--featured {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* おすすめバッジ */
-    .pricing-card__badge {
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--primary);
-      color: var(--white);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      padding: 4px 16px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .pricing-card__name {
-      font-size: 0.8rem;
-      font-weight: 700;
+    .collection-meta {
+      font-size: 11px;
+      font-weight: 300;
       letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--primary-light);
-      margin-bottom: 12px;
+      color: var(--gray);
     }
 
-    /* 月額価格 */
-    .pricing-card__price {
-      font-size: 2.6rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-
-    .pricing-card__price sup {
-      font-size: 1.1rem;
-      font-weight: 700;
-      vertical-align: top;
-      margin-top: 8px;
-      display: inline-block;
-    }
-
-    .pricing-card__price sub {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--muted);
-      vertical-align: baseline;
-    }
-
-    .pricing-card__desc {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 28px;
-      min-height: 40px;
-    }
-
-    /* 料金カードの区切り線 */
-    .pricing-card__divider {
-      height: 1px;
-      background: var(--border);
-      margin-bottom: 24px;
-    }
-
-    /* 機能リスト */
-    .pricing-card__features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
-
-    .pricing-card__features li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.875rem;
-      color: var(--text);
-    }
-
-    /* チェックアイコン */
-    .pricing-card__features li::before {
-      content: '';
-      width: 18px;
-      height: 18px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%231e40af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
-      flex-shrink: 0;
-    }
-
-    /* 含まれない項目はグレーで打ち消し線 */
-    .pricing-card__features li.disabled {
-      color: var(--muted);
-      text-decoration: line-through;
-    }
-
-    .pricing-card__features li.disabled::before {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 18L18 6M6 6l12 12'/%3E%3C/svg%3E");
-    }
-
-    /* プレミアムカードのチェックアイコンを水色に */
-    .pricing-card[style*="linear-gradient"] .pricing-card__features li::before {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
-    }
-
-    /* CTAボタン（おすすめ以外はアウトライン） */
-    .pricing-card .btn {
-      display: flex;
-      width: 100%;
-      box-sizing: border-box;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* レスポンシブ：タブレットで2列 */
-    @media (max-width: 768px) {
-      .pricing__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* レスポンシブ：スマホで1列 */
-    @media (max-width: 480px) {
-      .pricing__grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* ===== 実績セクション（ネイビー背景） ===== */
-    .achievements {
-      background: var(--primary-dark);
-      color: var(--white);
-    }
-
-    .achievements .section-label {
-      color: #93c5fd; /* 薄いブルー */
-    }
-
-    .achievements .section-title {
-      color: var(--white);
-    }
-
-    .achievements .section-desc {
-      color: rgba(255,255,255,.7);
-    }
-
-    /* 実績の数値カードグリッド */
-    .achievements__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-    }
-
-    .achievement-card {
-      text-align: center;
-      padding: 40px 24px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: var(--radius-lg);
-    }
-
-    /* カウントアップされる数値 */
-    .achievement-card__num {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--white);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .achievement-card__num span {
-      color: #93c5fd; /* 単位・接尾辞を薄い青で */
-    }
-
-    .achievement-card__label {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,.65);
-      letter-spacing: 0.04em;
-    }
-
-    /* ===== プレミアムプランセクション ===== */
-    .premium {
-      background: linear-gradient(135deg, var(--primary-dark) 0%, #1e3566 50%, #0f172a 100%);
-      color: var(--white);
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* 背景の装飾 */
-    .premium::before {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(59,130,246,.15) 0%, transparent 70%);
-      top: -200px;
-      right: -100px;
-      pointer-events: none;
-    }
-
-    .premium::after {
-      content: '';
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(30,64,175,.12) 0%, transparent 70%);
-      bottom: -100px;
-      left: -80px;
-      pointer-events: none;
-    }
-
-    .premium__inner {
-      position: relative;
-      z-index: 1;
+    /* ===== ブランドストーリー ===== */
+    #story {
+      padding: 120px 48px;
+      background: var(--black);
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: center;
     }
 
-    .premium .section-label {
-      color: #93c5fd;
+    .story-image {
+      aspect-ratio: 4/5;
+      position: relative;
+      overflow: hidden;
     }
 
-    .premium .section-title {
+    /* ストーリー写真：実際の画像 */
+    .story-image-inner {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=85&fit=crop&crop=center');
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.8s ease;
+    }
+
+    .story-image:hover .story-image-inner { transform: scale(1.04); }
+
+    /* 画像の上に暗めのオーバーレイ */
+    .story-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .story-image-border {
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .story-content .section-title {
       color: var(--white);
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin-bottom: 40px;
     }
 
-    .premium__sub {
-      font-size: 1rem;
-      color: rgba(255,255,255,.75);
-      line-height: 1.8;
+    .story-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2.1;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+
+    .story-cta {
+      display: inline-block;
       margin-top: 16px;
-      margin-bottom: 40px;
-    }
-
-    /* プレミアム特典リスト */
-    .premium__features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 40px;
-    }
-
-    .premium__features li {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.95rem;
-      color: rgba(255,255,255,.9);
-    }
-
-    .premium__features li::before {
-      content: '';
-      width: 22px;
-      height: 22px;
-      flex-shrink: 0;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
-    }
-
-    .premium__actions {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    /* 右側：プランカード */
-    .premium__card {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: var(--radius-lg);
-      padding: 48px 40px;
-      backdrop-filter: blur(8px);
-    }
-
-    .premium__card-badge {
-      display: inline-block;
-      background: linear-gradient(90deg, #f59e0b, #fbbf24);
-      color: #1e1e1e;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      padding: 5px 16px;
-      border-radius: 999px;
-      margin-bottom: 20px;
-    }
-
-    .premium__card-name {
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: #93c5fd;
-      margin-bottom: 12px;
+      text-decoration: none;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.4);
+      padding-bottom: 4px;
+      transition: border-color 0.2s;
     }
 
-    .premium__card-price {
-      font-size: 2.8rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
+    .story-cta:hover { border-color: var(--gold); }
+
+    /* ===== ルックブック ===== */
+    #lookbook {
+      padding: 120px 0;
+      background: var(--cream);
+      overflow: hidden;
+    }
+
+    .lookbook-header {
+      padding: 0 48px;
+      margin-bottom: 64px;
+    }
+
+    .lookbook-track {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 48px;
+      cursor: grab;
+    }
+
+    .lookbook-track::-webkit-scrollbar { display: none; }
+    .lookbook-track:active { cursor: grabbing; }
+
+    .lookbook-item { flex-shrink: 0; width: 320px; }
+
+    .lookbook-photo {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+
+    /* ルックブック写真：実際の画像 */
+    .lookbook-photo-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center top;
+      transition: transform 0.8s ease;
+    }
+
+    .lookbook-item:hover .lookbook-photo-inner { transform: scale(1.05); }
+
+    .lookbook-caption {
+      padding: 16px 0 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gray);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== フィロソフィー ===== */
+    #philosophy {
+      padding: 120px 48px;
+      background: var(--black);
+      text-align: center;
+    }
+
+    #philosophy .section-header {
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .philosophy-item {
+      padding: 64px 48px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .philosophy-item:hover {
+      border-color: rgba(201, 169, 110, 0.4);
+      background: rgba(201, 169, 110, 0.03);
+    }
+
+    .philosophy-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: rgba(201, 169, 110, 0.3);
+      margin-bottom: 32px;
+    }
+
+    .philosophy-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
       color: var(--white);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .premium__card-price sup {
-      font-size: 1.2rem;
-      font-weight: 700;
-      vertical-align: top;
-      margin-top: 8px;
-      display: inline-block;
-    }
-
-    .premium__card-price sub {
-      font-size: 1rem;
-      font-weight: 500;
-      color: rgba(255,255,255,.6);
-      vertical-align: baseline;
-    }
-
-    .premium__card-desc {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,.6);
-      margin-bottom: 28px;
-    }
-
-    .premium__card-divider {
-      height: 1px;
-      background: rgba(255,255,255,.12);
+      letter-spacing: 0.08em;
       margin-bottom: 24px;
     }
 
-    .premium__card-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 36px;
+    .philosophy-text {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 2;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.03em;
+      text-align: left;
     }
 
-    .premium__card-features li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.875rem;
-      color: rgba(255,255,255,.88);
+    /* ===== ストア ===== */
+    #store {
+      padding: 120px 48px;
+      background: var(--cream);
     }
 
-    .premium__card-features li::before {
-      content: '';
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.5' stroke='%2393c5fd'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") center/contain no-repeat;
-    }
-
-    .premium__card .btn--white {
-      display: flex;
-      width: 100%;
-      box-sizing: border-box;
-      justify-content: center;
-      align-items: center;
-      background: var(--white);
-      color: var(--primary-dark);
-      font-weight: 700;
-    }
-
-    .premium__card .btn--white:hover {
-      background: #f1f5f9;
-      transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-      .premium__inner {
-        grid-template-columns: 1fr;
-        gap: 48px;
-      }
-    }
-
-    /* ===== お問い合わせフォームセクション ===== */
-    .contact {
-      background: var(--surface);
-    }
-
-    /* お問い合わせフォームを中央寄せ（独立セクション用） */
-    .contact__centered {
-      max-width: 680px;
-      margin: 0 auto;
-    }
-
-    .contact__centered .section-head {
-      text-align: center;
-    }
-
-    .contact__centered .section-desc {
-      max-width: 100%;
-      margin: 0 auto;
-    }
-
-    .contact__inner {
+    .store-grid {
       display: grid;
-      grid-template-columns: 1fr 1.4fr;
-      gap: 80px;
-      align-items: start;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 64px;
     }
 
-    .contact__info h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
+    .store-item { overflow: hidden; }
+
+    .store-photo {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    /* ストア写真：実際の画像 */
+    .store-photo-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.8s ease;
+    }
+
+    .store-item:hover .store-photo-inner { transform: scale(1.04); }
+
+    .store-info { padding: 32px 0 0; }
+
+    .store-city {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
       margin-bottom: 12px;
-      color: var(--text);
     }
 
-    .contact__info p {
-      font-size: 0.9rem;
-      color: var(--muted);
+    .store-address {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--gray);
       line-height: 1.8;
     }
 
-    /* 問い合わせカード（電話・メールなど） */
-    .contact__cards {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 32px;
-    }
-
-    .contact__card {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 20px;
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-    }
-
-    .contact__card svg {
-      width: 20px;
-      height: 20px;
-      stroke: var(--primary-light);
-      flex-shrink: 0;
-    }
-
-    .contact__card-text {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .contact__card-text strong {
-      display: block;
-      font-size: 0.95rem;
-      color: var(--text);
-    }
-
-    /* フォーム本体 */
-    .form {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 40px;
-      box-shadow: var(--shadow-md);
-    }
-
-    .form__group {
-      margin-bottom: 20px;
-    }
-
-    .form__label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    .form__required {
-      color: #ef4444;
-      margin-left: 4px;
-    }
-
-    .form__input,
-    .form__textarea {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      color: var(--text);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
-
-    .form__input:focus,
-    .form__textarea:focus {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(59,130,246,.15);
-      background: var(--white);
-    }
-
-    /* バリデーションエラー時 */
-    .form__input.error,
-    .form__textarea.error {
-      border-color: #ef4444;
-    }
-
-    .form__error {
-      font-size: 0.78rem;
-      color: #ef4444;
-      margin-top: 4px;
-      display: none;
-    }
-
-    .form__error.visible {
-      display: block;
-    }
-
-    .form__textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .form__submit {
-      width: 100%;
-      padding: 15px;
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: inherit;
-    }
-
-    /* 送信後のサンクスメッセージ */
-    .form__thanks {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .form__thanks.visible {
-      display: block;
-    }
-
-    .form__thanks-icon {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, #dbeafe, #eff6ff);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-    }
-
-    .form__thanks-icon svg {
-      width: 32px;
-      height: 32px;
-      stroke: var(--primary);
-    }
-
-    .form__thanks h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .form__thanks p {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    /* ===== お客様の声セクション ===== */
-    .testimonials {
-      background: var(--bg);
-    }
-
-    /* 3カラムのグリッド */
-    .testimonials__grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    /* 各カード */
-    .testi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 32px 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      transition: transform .25s, box-shadow .25s;
-    }
-
-    .testi-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    /* 星評価 */
-    .testi-card__stars {
-      color: #f59e0b;
-      font-size: 1rem;
-      letter-spacing: 2px;
-    }
-
-    /* 引用テキスト */
-    .testi-card__quote {
-      font-size: 0.925rem;
-      line-height: 1.8;
-      color: var(--text);
-      flex: 1;
-      position: relative;
-      padding-left: 20px;
-    }
-
-    /* 左の青い縦線アクセント */
-    .testi-card__quote::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(to bottom, var(--primary-light), var(--primary));
-      border-radius: 2px;
-    }
-
-    /* 顧客プロフィール行 */
-    .testi-card__person {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    /* 顔写真 */
-    .testi-card__avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-      border: 2px solid var(--border);
-    }
-
-    .testi-card__name {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .testi-card__role {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    /* レスポンシブ：タブレットは2列 */
-    @media (max-width: 768px) {
-      .testimonials__grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* レスポンシブ：スマホは1列 */
-    @media (max-width: 480px) {
-      .testimonials__grid { grid-template-columns: 1fr; }
+    .store-hours {
+      margin-top: 16px;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--gold);
     }
 
     /* ===== フッター ===== */
-    .footer {
-      background: var(--text);
-      color: rgba(255,255,255,.7);
-      padding: 56px 0 32px;
+    footer {
+      background: var(--black);
+      padding: 80px 48px 40px;
     }
 
-    .footer__inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 40px;
-      margin-bottom: 48px;
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 40px;
     }
 
-    .footer__logo {
-      font-size: 1.3rem;
-      font-weight: 800;
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
       color: var(--white);
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
+      margin-bottom: 24px;
     }
 
-    .footer__logo span {
-      color: #93c5fd;
+    .footer-tagline {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.9;
+      letter-spacing: 0.05em;
     }
 
-    .footer__tagline {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,.5);
-    }
-
-    .footer__nav {
-      display: flex;
-      gap: 60px;
-    }
-
-    .footer__nav-group h4 {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+    .footer-col-title {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(255,255,255,.5);
-      margin-bottom: 16px;
+      color: var(--gold);
+      margin-bottom: 24px;
     }
 
-    .footer__nav-group ul {
+    .footer-links {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
-    .footer__nav-group a {
-      font-size: 0.9rem;
-      transition: color .2s;
+    .footer-links a {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    .footer__nav-group a:hover {
+    .footer-links a:hover { color: var(--white); }
+
+    .footer-newsletter { display: flex; margin-top: 8px; }
+
+    .footer-newsletter input {
+      flex: 1;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-right: none;
       color: var(--white);
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.1em;
+      outline: none;
     }
 
-    .footer__bottom {
-      border-top: 1px solid rgba(255,255,255,.1);
-      padding-top: 28px;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,.35);
-      text-align: center;
-    }
+    .footer-newsletter input::placeholder { color: rgba(255,255,255,0.3); }
 
-    /* ===== フローティングチャットボット ===== */
-    .chat-fab {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      z-index: 200;
-    }
-
-    /* チャットを開くボタン */
-    .chat-fab__btn {
-      width: 60px;
-      height: 60px;
-      background: var(--primary);
+    .footer-newsletter button {
+      padding: 12px 20px;
+      background: var(--gold);
       border: none;
-      border-radius: 50%;
+      font-size: 10px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.2em;
       cursor: pointer;
+      color: var(--black);
+      transition: opacity 0.2s;
+    }
+
+    .footer-newsletter button:hover { opacity: 0.8; }
+
+    .footer-bottom {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 24px rgba(30,64,175,.4);
-      transition: transform .2s, background .2s;
     }
 
-    .chat-fab__btn:hover {
-      transform: scale(1.08);
-      background: var(--primary-dark);
+    .footer-copy {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
     }
 
-    .chat-fab__btn svg {
-      width: 28px;
-      height: 28px;
-      stroke: var(--white);
+    .footer-sns { display: flex; gap: 24px; }
+
+    .footer-sns a {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    /* アイコンの切り替え（開閉） */
-    .chat-fab__btn .icon-chat  { display: block; }
-    .chat-fab__btn .icon-close { display: none;  }
+    .footer-sns a:hover { color: var(--gold); }
 
-    .chat-fab__btn.open .icon-chat  { display: none;  }
-    .chat-fab__btn.open .icon-close { display: block; }
-
-    /* 未読バッジ */
-    .chat-fab__badge {
+    /* ===== グレインテクスチャ（高級感演出）===== */
+    .hero-grain {
       position: absolute;
-      top: -4px;
-      right: -4px;
-      width: 18px;
-      height: 18px;
-      background: #ef4444;
-      border-radius: 50%;
-      border: 2px solid var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--white);
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
       pointer-events: none;
+      z-index: 2;
     }
 
-    .chat-fab__badge.hidden {
-      display: none;
+    /* ===== コレクションアイテム ラベル ===== */
+    .collection-photo { position: relative; }
+
+    .collection-photo-label {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(201,169,110,0.9);
+      color: var(--black);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 1;
+    }
+
+    .collection-item:hover .collection-photo-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== セクション区切り線 ===== */
+    .section-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    /* ===== スクロールバー非表示（全体）===== */
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+
+    /* ===== ===== アニメーション ===== */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== レスポンシブ（タブレット） ===== */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+
+      .nav-links {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--black);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        z-index: 99;
+      }
+
+      .nav-links.open { display: flex; }
+      .nav-links a { font-size: 14px; color: var(--white) !important; }
+      .hamburger { display: flex; z-index: 101; }
+
+      #collection { padding: 80px 24px; }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
+      .collection-grid { grid-template-columns: 1fr 1fr; }
+
+      .collection-item:first-child .collection-photo {
+        aspect-ratio: 3/4;
+        height: auto;
+      }
+
+      #story {
+        padding: 80px 24px;
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      #lookbook { padding: 80px 0; }
+      .lookbook-header { padding: 0 24px; }
+      .lookbook-track { padding: 0 24px; }
+      .lookbook-item { width: 240px; }
+
+      #philosophy { padding: 80px 24px; }
+      .philosophy-grid { grid-template-columns: 1fr; }
+      .philosophy-item { padding: 40px 32px; }
+
+      #store { padding: 80px 24px; }
+      .store-grid { grid-template-columns: 1fr; }
+
+      footer { padding: 64px 24px 32px; }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+
+      .footer-top > div:first-child { grid-column: span 2; }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== レスポンシブ（スマートフォン） ===== */
+    @media (max-width: 480px) {
+      .hero-title { letter-spacing: 0.08em; }
+
+      .collection-grid { grid-template-columns: 1fr; }
+
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-top > div:first-child { grid-column: span 1; }
+    }
+
+    /* ===== チャットボット ===== */
+
+    /* 起動ボタン（右下フローティング・ピルシェイプ）*/
+    .chat-btn {
+      position: fixed;
+      bottom: 36px;
+      right: 36px;
+      z-index: 200;
+      height: 50px;
+      padding: 0 22px 0 18px;
+      border-radius: 999px;
+      background: var(--black);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, padding 0.25s ease;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,169,110,0.1);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* 注目を引くための微細なパルスグロー */
+    @keyframes chatPulse {
+      0%, 100% { box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,169,110,0.1); }
+      50%       { box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 16px rgba(201,169,110,0.2), 0 0 0 1px rgba(201,169,110,0.3); }
+    }
+
+    /* 初回表示時のみパルスを3回 */
+    .chat-btn:not(.is-open):not(.pulse-done) {
+      animation: chatPulse 2s ease-in-out 1s 3;
+    }
+
+    .chat-btn:hover {
+      transform: translateY(-2px);
+      background: #161610;
+      box-shadow: 0 8px 36px rgba(0,0,0,0.5), 0 0 20px rgba(201,169,110,0.2), 0 0 0 1px rgba(201,169,110,0.4);
+    }
+
+    /* ボタンが開いている状態（コンパクトに縮む）*/
+    .chat-btn.is-open {
+      background: #161610;
+      padding: 0 18px;
+      gap: 8px;
+    }
+
+    /* チャットバブルアイコン */
+    .chat-btn-icon {
+      flex-shrink: 0;
+      color: var(--gold);
+      transition: opacity 0.2s, transform 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .chat-btn.is-open .chat-btn-icon { opacity: 0; width: 0; overflow: hidden; }
+
+    /* ボタンテキストエリア */
+    .chat-btn-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .chat-btn.is-open .chat-btn-text-wrap { opacity: 0; width: 0; overflow: hidden; }
+
+    /* "CONCIERGE" メインラベル */
+    .chat-btn-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* "AI Chat" サブラベル */
+    .chat-btn-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: rgba(201,169,110,0.5);
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* 閉じる状態のテキスト（is-open 時のみ表示）*/
+    .chat-btn-close-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: rgba(201,169,110,0.7);
+      text-transform: uppercase;
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      transition: opacity 0.2s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 閉じる × アイコン */
+    .chat-btn-close-text::before {
+      content: '×';
+      font-size: 14px;
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .chat-btn.is-open .chat-btn-close-text {
+      opacity: 1;
+      width: auto;
     }
 
     /* チャットウィンドウ */
     .chat-window {
-      position: absolute;
-      bottom: 76px;
-      right: 0;
-      width: 340px;
-      height: 480px;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      position: fixed;
+      bottom: 104px;
+      right: 36px;
+      z-index: 199;
+      width: 360px;
+      max-width: calc(100vw - 48px);
+      background: #0d0d0b;
+      border: 1px solid rgba(201,169,110,0.3);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border: 1px solid var(--border);
-
-      /* 開閉アニメーション */
-      transform-origin: bottom right;
-      transform: scale(0.85) translateY(12px);
+      /* 初期状態：非表示 */
       opacity: 0;
+      transform: translateY(20px) scale(0.97);
       pointer-events: none;
-      transition: transform .25s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,169,110,0.1);
     }
 
-    .chat-window.open {
-      transform: scale(1) translateY(0);
+    .chat-window.is-open {
       opacity: 1;
+      transform: translateY(0) scale(1);
       pointer-events: all;
     }
 
-    /* チャットヘッダー */
+    /* ヘッダー */
     .chat-header {
-      background: var(--primary);
-      padding: 16px 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
+      justify-content: space-between;
+      padding: 20px 24px 18px;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+      background: #0d0d0b;
     }
 
-    /* アシスタントのアイコン */
-    .chat-header__avatar {
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,.2);
-      border-radius: 50%;
+    .chat-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .chat-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .chat-subtitle {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: rgba(201,169,110,0.6);
+      text-transform: uppercase;
+    }
+
+    /* ヘッダーの閉じるボタン */
+    .chat-header-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      color: rgba(201,169,110,0.5);
+      transition: color 0.2s;
+      position: relative;
     }
 
-    .chat-header__avatar svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--white);
+    .chat-header-close:hover { color: var(--gold); }
+
+    .chat-header-close::before,
+    .chat-header-close::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 1px;
+      background: currentColor;
     }
 
-    .chat-header__info h3 {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--white);
+    .chat-header-close::before { transform: rotate(45deg); }
+    .chat-header-close::after  { transform: rotate(-45deg); }
+
+    /* ステータスインジケーター */
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 24px;
+      border-bottom: 1px solid rgba(201,169,110,0.1);
     }
 
-    .chat-header__info p {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,.7);
+    .chat-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf7d;
+      box-shadow: 0 0 6px rgba(76,175,125,0.6);
+    }
+
+    .chat-status-text {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: rgba(244,239,232,0.4);
+      text-transform: uppercase;
     }
 
     /* メッセージエリア */
-    .chat-body {
+    .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 16px;
+      padding: 20px 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
+      max-height: 320px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,169,110,0.2) transparent;
     }
 
-    /* スクロールバーのカスタマイズ */
-    .chat-body::-webkit-scrollbar { width: 4px; }
-    .chat-body::-webkit-scrollbar-track { background: transparent; }
-    .chat-body::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 2px;
-    }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); border-radius: 2px; }
 
-    /* ボットのメッセージ */
+    /* メッセージバブル（AI） */
     .chat-msg {
       display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
-    .chat-msg--bot {
-      justify-content: flex-start;
-    }
-
-    .chat-msg--user {
-      justify-content: flex-end;
-    }
-
-    .chat-msg__bubble {
-      max-width: 76%;
-      padding: 10px 14px;
-      border-radius: 16px;
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-
-    /* ボット側のバブル */
-    .chat-msg--bot .chat-msg__bubble {
-      background: var(--surface);
-      color: var(--text);
-      border-bottom-left-radius: 4px;
-    }
-
-    /* ユーザー側のバブル */
-    .chat-msg--user .chat-msg__bubble {
-      background: var(--primary);
-      color: var(--white);
-      border-bottom-right-radius: 4px;
-    }
-
-    /* FAQ選択肢ボタンのラッパー */
-    .chat-choices {
-      display: flex;
       flex-direction: column;
-      gap: 6px;
-      padding-left: 4px;
+      gap: 4px;
+      max-width: 88%;
     }
 
-    /* 個々の選択肢ボタン */
-    .chat-choice {
-      display: inline-block;
-      align-self: flex-start;
-      padding: 8px 14px;
-      background: var(--white);
-      border: 1px solid var(--primary-light);
-      color: var(--primary);
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, color .2s;
+    .chat-msg--ai { align-self: flex-start; }
+    .chat-msg--user { align-self: flex-end; }
+
+    .chat-msg-bubble {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.65;
+      letter-spacing: 0.02em;
     }
 
-    .chat-choice:hover {
-      background: var(--primary);
-      color: var(--white);
+    /* AIメッセージ：暗いグレー地、クリーム文字 */
+    .chat-msg--ai .chat-msg-bubble {
+      background: rgba(244,239,232,0.06);
+      color: rgba(244,239,232,0.88);
+      border: 1px solid rgba(244,239,232,0.08);
+      border-radius: 2px 12px 12px 12px;
     }
 
-    /* 選択済みは押せない状態に */
-    .chat-choices.disabled .chat-choice {
-      opacity: 0.45;
-      cursor: not-allowed;
-      pointer-events: none;
+    /* ユーザーメッセージ：ゴールド地 */
+    .chat-msg--user .chat-msg-bubble {
+      background: rgba(201,169,110,0.14);
+      color: rgba(244,239,232,0.9);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 12px 2px 12px 12px;
     }
 
-    /* 「入力中」の点滅インジケーター */
+    /* タイピングインジケーター */
     .chat-typing {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 12px 14px;
-      background: var(--surface);
-      border-radius: 16px;
-      border-bottom-left-radius: 4px;
+      gap: 5px;
+      padding: 12px 16px;
+      background: rgba(244,239,232,0.06);
+      border: 1px solid rgba(244,239,232,0.08);
+      border-radius: 2px 12px 12px 12px;
       width: fit-content;
     }
 
     .chat-typing span {
-      width: 6px;
-      height: 6px;
-      background: var(--muted);
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
-      animation: typing 1.2s ease-in-out infinite;
+      background: rgba(201,169,110,0.6);
+      animation: typingDot 1.4s infinite ease-in-out;
     }
 
-    .chat-typing span:nth-child(2) { animation-delay: .2s; }
-    .chat-typing span:nth-child(3) { animation-delay: .4s; }
+    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
 
-    /* チャット入力フッター */
-    .chat-footer {
-      padding: 10px 12px;
-      border-top: 1px solid var(--border);
+    @keyframes typingDot {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+      40%            { transform: scale(1);   opacity: 1;   }
+    }
+
+    /* 入力エリア */
+    .chat-input-area {
       display: flex;
-      gap: 8px;
-      align-items: flex-end;
-      background: var(--bg);
-      border-radius: 0 0 16px 16px;
+      align-items: center;
+      gap: 0;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(201,169,110,0.15);
+      background: #0a0a08;
     }
 
     .chat-input {
       flex: 1;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 8px 14px;
-      font-size: 0.875rem;
-      font-family: inherit;
-      resize: none;
+      background: none;
+      border: none;
       outline: none;
-      max-height: 80px;
-      line-height: 1.5;
-      color: var(--text);
-      background: var(--bg);
-      transition: border-color .2s;
-    }
-
-    .chat-input:focus {
-      border-color: var(--primary-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(244,239,232,0.85);
+      letter-spacing: 0.02em;
+      padding: 4px 0;
     }
 
     .chat-input::placeholder {
-      color: var(--muted);
+      color: rgba(244,239,232,0.25);
+      font-style: italic;
     }
 
     .chat-send {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      border-radius: 50%;
-      background: var(--primary);
+      background: none;
       border: none;
       cursor: pointer;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background .2s, transform .15s;
+      color: rgba(201,169,110,0.5);
+      transition: color 0.2s, transform 0.2s;
       flex-shrink: 0;
     }
 
-    .chat-send:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: scale(1.08);
+    .chat-send:hover {
+      color: var(--gold);
+      transform: translateX(2px);
     }
 
     .chat-send:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
+      opacity: 0.3;
+      cursor: default;
+      transform: none;
     }
 
-    .chat-send svg {
-      width: 16px;
-      height: 16px;
-      stroke: #fff;
-    }
-
-    @keyframes typing {
-      0%, 80%, 100% { transform: scale(1);   opacity: .5; }
-      40%            { transform: scale(1.3); opacity: 1;  }
-    }
-
-    /* ===== スクロールアニメーション用クラス ===== */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .6s ease, transform .6s ease;
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ===== レスポンシブ：タブレット（～768px） ===== */
-    @media (max-width: 768px) {
-      .section { padding: 72px 0; }
-
-      /* ナビ：タブレット以下でメインナビを隠してハンバーガーを表示 */
-      .nav__right  { display: none; }
-      .nav__hamburger { display: flex; }
-
-      /* ヒーロー：タブレットは1カラムに */
-      .hero__inner { grid-template-columns: 1fr; gap: 48px; padding-top: 88px; min-height: auto; padding-bottom: 80px; }
-      .hero__visual { order: -1; max-width: 480px; margin: 0 auto; }
-      .hero__title { font-size: clamp(2.4rem, 9vw, 3.6rem); }
-
-      /* サービスグリッドを2列に */
-      .services__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      /* 実績グリッドを2列に */
-      .achievements__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      /* お問い合わせを1列に */
-      .contact__inner {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      /* 連絡先カードをタブレットで縦積みに */
-      .contact__cards[style*="flex-direction:row"] {
-        flex-direction: column !important;
-      }
-
-      /* フッターを縦積みに */
-      .footer__inner {
-        flex-direction: column;
-      }
-
-      .footer__nav {
-        gap: 40px;
-      }
-    }
-
-    /* ===== レスポンシブ：スマホ（～480px） ===== */
+    /* モバイル対応 */
     @media (max-width: 480px) {
-      .section { padding: 56px 0; }
-      .section-head { margin-bottom: 36px; }
-
-      /* ヒーロー */
-      .hero__actions { flex-direction: column; }
-      .btn { justify-content: center; min-height: 44px; } /* タップターゲット確保 */
-
-      /* サービスを1列に */
-      .services__grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* 実績を1列に */
-      .achievements__grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* フォーム */
-      .form { padding: 24px 20px; }
-
-      /* フッターナビを縦積みに */
-      .footer__nav { flex-direction: column; gap: 32px; }
-
-      /* チャットウィンドウをほぼ全画面に */
+      .chat-btn  { bottom: 20px; right: 16px; height: 46px; padding: 0 18px 0 14px; }
       .chat-window {
-        width: calc(100vw - 24px);
-        right: -4px;
-        height: 420px;
+        bottom: 84px;
+        right: 16px;
+        width: calc(100vw - 32px);
+        max-width: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== ナビゲーション（OLCスタイル） ===== -->
-  <header class="nav" id="nav">
-    <div class="container">
-      <div class="nav__inner">
-
-        <!-- ロゴ（左・縦中央） -->
-        <a href="#" class="nav__logo">
-          <div class="nav__logo-icon">
-            <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-          </div>
-          <div class="nav__logo-text">
-            <span class="logo-en">TAMOTO</span>
-            <span class="logo-ja">株式会社TAMOTO</span>
-          </div>
-        </a>
-
-        <!-- 右カラム -->
-        <div class="nav__right">
-
-          <!-- 上段：ユーティリティ（Language ∨ ｜ 検索） -->
-          <div class="nav__utility">
-            <button class="nav__util-btn">
-              <!-- 地球アイコン -->
-              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
-              </svg>
-              Language
-              <!-- シェブロン -->
-              <svg fill="none" stroke-width="2.5" viewBox="0 0 24 24" width="10" height="10">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </button>
-            <button class="nav__util-btn">
-              <!-- 検索アイコン -->
-              <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/>
-                <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
-              </svg>
-              検索
-            </button>
-          </div>
-
-          <!-- 下段：メインナビゲーション -->
-          <nav>
-            <ul class="nav__menu">
-
-              <!-- サービス（ドロップダウン付き） -->
-              <li>
-                <a href="#services">
-                  サービス
-                  <svg class="nav__chevron" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </a>
-                <ul class="nav__dropdown">
-                  <li><a href="#services">AIチャットボット開発</a></li>
-                  <li><a href="#services">LLM連携・カスタムAI</a></li>
-                  <li><a href="#services">会話UI/UXデザイン</a></li>
-                  <li><a href="#services">クラウド・API基盤構築</a></li>
-                  <li><a href="#services">AI導入コンサルティング</a></li>
-                  <li><a href="#services">保守・サポート・改善</a></li>
-                </ul>
-              </li>
-
-              <!-- 料金プラン -->
-              <li><a href="#pricing">料金プラン</a></li>
-
-              <!-- 実績（ドロップダウン付き） -->
-              <li>
-                <a href="#achievements">
-                  実績・お客様の声
-                  <svg class="nav__chevron" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </a>
-                <ul class="nav__dropdown">
-                  <li><a href="#achievements">数字で見る実績</a></li>
-                  <li><a href="#testimonials">お客様の声</a></li>
-                </ul>
-              </li>
-
-              <!-- 会社情報 -->
-              <li><a href="#company">会社情報</a></li>
-
-              <!-- プレミアムプラン -->
-              <li><a href="#premium">プレミアム</a></li>
-
-              <!-- お問い合わせ -->
-              <li><a href="#contact">お問い合わせ</a></li>
-
-              <!-- 無料相談CTA -->
-              <li class="nav__item--cta"><a href="#contact">無料相談</a></li>
-
-            </ul>
-          </nav>
-        </div>
-
-        <!-- ハンバーガーボタン（モバイル） -->
-        <button class="nav__hamburger" id="hamburger" aria-label="メニューを開く">
-          <span></span><span></span><span></span>
-        </button>
-
-      </div>
-    </div>
-  </header>
-
-  <!-- モバイルドロワーメニュー -->
-  <nav class="nav__drawer" id="drawer">
-    <!-- ドロワー内ユーティリティ -->
-    <div class="nav__drawer-utility">
-      <a href="#">🌐 Language</a>
-      <a href="#">🔍 検索</a>
-    </div>
-    <!-- ドロワー内ナビリンク -->
-    <a href="#services">サービス</a>
-    <a href="#pricing">料金プラン</a>
-    <a href="#achievements">実績</a>
-    <a href="#testimonials">お客様の声</a>
-    <a href="#premium">プレミアム</a>
-    <a href="#company">会社情報</a>
-    <a href="#contact">お問い合わせ</a>
-    <a href="#contact" class="drawer-cta">無料相談</a>
+  <!-- ナビゲーション -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">MAISON KUROE</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#lookbook">Lookbook</a></li>
+      <li><a href="#store">Store</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 
-
-  <!-- ===== ヒーローセクション ===== -->
-  <section class="hero" id="hero">
-    <!-- 装飾の幾何学図形 -->
-    <div class="hero__shape hero__shape--1"></div>
-    <div class="hero__shape hero__shape--2"></div>
-
-    <div class="container">
-      <div class="hero__inner">
-
-        <!-- 左カラム：テキストエリア -->
-        <div class="hero__content">
-          <!-- バッジ -->
-          <div class="hero__badge">🤖 AIチャットボット専門企業</div>
-
-          <!-- メインタイトル -->
-          <h1 class="hero__title">
-            会話AIで、<em>ビジネス</em>を変える。
-          </h1>
-
-          <!-- サブテキスト -->
-          <p class="hero__sub">
-            最新のLLM技術を活用したAIチャットボットを開発・導入支援します。
-            カスタマーサポートから社内FAQ・営業支援まで、あらゆる対話を自動化します。
-          </p>
-
-          <!-- CTAボタン -->
-          <div class="hero__actions">
-            <a href="#contact" class="btn btn--primary">
-              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
-              </svg>
-              無料で相談する
-            </a>
-            <a href="#services" class="btn btn--outline">サービスを見る</a>
-          </div>
-        </div>
-
-        <!-- 右カラム：笑顔の写真 -->
-        <div class="hero__visual">
-          <div class="hero__img-wrap">
-            <!-- 笑顔のビジネスチーム写真（Unsplash） -->
-            <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=85&auto=format&fit=crop"
-              alt="笑顔で働くビジネスチーム"
-              loading="eager"
-            />
-          </div>
-
-          <!-- 左上：星評価バブル -->
-          <div class="hero__img-badge2">
-            <span class="stars">★★★★★</span>
-            <span>顧客満足度 98%</span>
-          </div>
-
-          <!-- 右下：実績バブル -->
-          <div class="hero__img-badge">
-            <div class="hero__img-badge-icon">
-              <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-              </svg>
-            </div>
-            <div class="hero__img-badge-text">
-              <strong>200社+</strong>
-              <span>チャットボット導入実績</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
+  <!-- ヒーローセクション -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-content">
+      <p class="hero-subtitle">Spring / Summer 2026</p>
+      <h1 class="hero-title">MAISON<br><em>KUROE</em></h1>
+      <p class="hero-desc">静寂の中に宿る、衣の美学</p>
+      <a href="#collection" class="hero-cta">View Collection</a>
     </div>
-
-    <!-- スクロール誘導 -->
-    <div class="hero__scroll">
-      <span>SCROLL</span>
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-      </svg>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
     </div>
   </section>
 
-
-  <!-- ===== 会社情報パネルセクション ===== -->
-  <div class="about-panels" id="company">
-
-    <!-- 左パネル：Message / トップメッセージ -->
-    <a class="about-panel" href="#contact">
-      <img
-        class="about-panel__img"
-        src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=900&q=85&auto=format&fit=crop"
-        alt="AIチャットボット開発"
-      />
-      <div class="about-panel__body">
-        <div class="about-panel__en">AI Chatbot</div>
-        <div class="about-panel__ja">AIチャットボット開発</div>
-        <span class="about-panel__btn">
-          サービスを見る
-          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
-        </span>
+  <!-- コレクションセクション -->
+  <section id="collection">
+    <div class="section-header fade-in">
+      <div>
+        <p class="section-label">New Arrival</p>
+        <h2 class="section-title">2026 S/S<br>Collection</h2>
       </div>
-    </a>
+      <a href="#" class="section-link">View All</a>
+    </div>
+    <div class="collection-grid fade-in">
 
-    <!-- 右パネル：Company / 会社情報 -->
-    <a class="about-panel" href="#contact">
-      <img
-        class="about-panel__img"
-        src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=900&q=85&auto=format&fit=crop"
-        alt="AI・テクノロジー"
-      />
-      <div class="about-panel__body">
-        <div class="about-panel__en">Company</div>
-        <div class="about-panel__ja">会社情報・導入事例</div>
-        <span class="about-panel__btn">
-          詳細を見る
-          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-          </svg>
-        </span>
+      <!-- アイテム1：メインビジュアル（縦長） -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=900&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Silk Atelier Coat</p>
+          <p class="collection-meta">¥198,000</p>
+        </div>
       </div>
-    </a>
 
-  </div>
+      <!-- アイテム2 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Wool Drape Dress</p>
+          <p class="collection-meta">¥128,000</p>
+        </div>
+      </div>
 
+      <!-- アイテム3 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Suede Chelsea Boots</p>
+          <p class="collection-meta">¥128,000</p>
+        </div>
+      </div>
 
-  <!-- ===== サービスセクション ===== -->
-  <section class="section services" id="services">
-    <div class="container">
-      <div class="section-head fade-up">
-        <span class="section-label">Our Services</span>
-        <h2 class="section-title">AIチャットボット開発サービス</h2>
-        <p class="section-desc">
-          企画・設計から開発・運用まで、AIチャットボット導入に必要なすべてをワンストップで提供します。
+      <!-- アイテム4 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Cashmere Wide Trousers</p>
+          <p class="collection-meta">¥88,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム5 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1585914924626-15adac1e6402?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Organza Blouse</p>
+          <p class="collection-meta">¥72,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム6 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Leather Strappy Heels</p>
+          <p class="collection-meta">¥98,000</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ブランドストーリー -->
+  <section id="story">
+    <div class="story-image fade-in">
+      <div class="story-image-inner"></div>
+      <div class="story-image-overlay"></div>
+      <div class="story-image-border"></div>
+    </div>
+    <div class="story-content fade-in">
+      <p class="section-label">Brand Story</p>
+      <h2 class="section-title">黒江の美学、<br>パリの精神</h2>
+      <p class="story-text">
+        MAISON KUROEは2018年、デザイナー・黒江燈（くろえ あかり）によって東京・南青山に創設されました。幼少期に祖母から受け継いだ和裁の記憶と、パリのアトリエで磨いたオートクチュールの技術。そのふたつが交差する場所に、このブランドは生まれました。
+      </p>
+      <p class="story-text">
+        「着ることは、沈黙の詩だ」——黒江はそう語ります。派手な主張より、余白の美しさを。流行より、時を超える質感を。一枚の衣が纏う人の内側を静かに照らすような、そんな服づくりを追求しています。
+      </p>
+      <a href="#" class="story-cta">Read More</a>
+    </div>
+  </section>
+
+  <!-- ルックブック -->
+  <section id="lookbook">
+    <div class="lookbook-header fade-in">
+      <p class="section-label">Editorial</p>
+      <h2 class="section-title">Lookbook 2026</h2>
+    </div>
+    <div class="lookbook-track fade-in">
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「静寂の庭」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「光と影」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1521341957697-b93449760f30?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「余白の詩」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「刻の衣」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「黒と金」</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- フィロソフィー -->
+  <section id="philosophy">
+    <div class="section-header fade-in">
+      <p class="section-label">Our Values</p>
+      <h2 class="section-title" style="color: var(--white);">Philosophy</h2>
+    </div>
+    <div class="philosophy-grid fade-in">
+      <div class="philosophy-item">
+        <p class="philosophy-number">01</p>
+        <h3 class="philosophy-title">静寂の美</h3>
+        <p class="philosophy-text">
+          声高に語る必要はない。一枚の布が持つ佇まい、縫い目の緊張感、裏地の手触り——見えない場所にこそ、本物の美しさは宿る。
         </p>
       </div>
-
-      <div class="services__grid">
-        <!-- カード 1 -->
-        <div class="service-card fade-up">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">AIチャットボット開発</h3>
-          <p class="service-card__desc">
-            要件定義から設計・開発・テストまで一貫対応。
-            カスタマーサポート・社内FAQ・営業支援など用途に合わせて構築します。
-          </p>
-        </div>
-
-        <!-- カード 2 -->
-        <div class="service-card fade-up" style="transition-delay:.1s">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">LLM連携・カスタムAI</h3>
-          <p class="service-card__desc">
-            Claude・GPT・Geminiなど最新LLMと自社システムを連携。
-            RAGやファインチューニングで精度の高い応答を実現します。
-          </p>
-        </div>
-
-        <!-- カード 3 -->
-        <div class="service-card fade-up" style="transition-delay:.2s">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">会話UI/UXデザイン</h3>
-          <p class="service-card__desc">
-            直感的で使いやすいチャットインターフェースを設計。
-            Webサイト・LINE・Slack等マルチプラットフォームに対応します。
-          </p>
-        </div>
-
-        <!-- カード 4 -->
-        <div class="service-card fade-up" style="transition-delay:.3s">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">クラウド・API基盤構築</h3>
-          <p class="service-card__desc">
-            AWS・GCP・Azureを活用したスケーラブルなAI基盤を構築。
-            高可用性・セキュアなAPI環境を提供します。
-          </p>
-        </div>
-
-        <!-- カード 5 -->
-        <div class="service-card fade-up" style="transition-delay:.4s">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 18h.01M8 21h8a2 2 0 002-2v-2a6 6 0 10-12 0v2a2 2 0 002 2zM12 3a4 4 0 100 8 4 4 0 000-8z"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">AI導入コンサルティング</h3>
-          <p class="service-card__desc">
-            現状分析・ROI試算・ロードマップ策定まで支援。
-            適切なAI活用戦略でDX推進を加速します。
-          </p>
-        </div>
-
-        <!-- カード 6 -->
-        <div class="service-card fade-up" style="transition-delay:.5s">
-          <div class="service-card__icon">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
-          </div>
-          <h3 class="service-card__title">保守・サポート・改善</h3>
-          <p class="service-card__desc">
-            導入後の継続的なモニタリングと精度改善を提供。
-            会話ログ分析によるチャットボットの品質向上を支援します。
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== 料金表セクション ===== -->
-  <section class="section pricing" id="pricing">
-    <div class="container">
-      <div class="section-head fade-up">
-        <span class="section-label">Pricing</span>
-        <h2 class="section-title">料金プラン</h2>
-        <p class="section-desc">
-          チャットボットの規模・用途に合わせて選べる3つの年額プランをご用意しています。
+      <div class="philosophy-item">
+        <p class="philosophy-number">02</p>
+        <h3 class="philosophy-title">素材への敬意</h3>
+        <p class="philosophy-text">
+          シルク、ウール、リネン。すべての素材はそれぞれの言語を持つ。私たちはその声に耳を傾け、素材が本来持つ生命力を最大限に引き出す。
         </p>
       </div>
-
-      <div class="pricing__grid">
-
-        <!-- ライトプラン -->
-        <div class="pricing-card fade-up">
-          <div class="pricing-card__name">Light</div>
-          <div class="pricing-card__price">
-            <sup>¥</sup>50,000<sub>/年</sub>
-          </div>
-          <p class="pricing-card__desc">FAQ型チャットボット・小規模導入向け</p>
-          <div class="pricing-card__divider"></div>
-          <ul class="pricing-card__features">
-            <li>FAQ型チャットボット構築</li>
-            <li>Webサイトへの埋め込み対応</li>
-            <li>月次レポート提供</li>
-            <li>メールサポート</li>
-            <li class="disabled">LLM連携（GPT・Claude等）</li>
-            <li class="disabled">社内システム連携</li>
-          </ul>
-          <a href="#contact" class="btn btn--outline">プランを相談する</a>
-        </div>
-
-        <!-- スタンダードプラン（おすすめ） -->
-        <div class="pricing-card pricing-card--featured fade-up" style="transition-delay:.1s">
-          <div class="pricing-card__badge">✦ おすすめ</div>
-          <div class="pricing-card__name">Standard</div>
-          <div class="pricing-card__price">
-            <sup>¥</sup>150,000<sub>/年</sub>
-          </div>
-          <p class="pricing-card__desc">LLM連携カスタムAIチャットボット向け</p>
-          <div class="pricing-card__divider"></div>
-          <ul class="pricing-card__features">
-            <li>カスタムAIチャットボット開発</li>
-            <li>LLM連携（GPT・Claude等）</li>
-            <li>LINE / Slack 等マルチチャネル対応</li>
-            <li>チャット・電話サポート</li>
-            <li>専任担当者アサイン</li>
-            <li class="disabled">社内システム・API連携</li>
-          </ul>
-          <a href="#contact" class="btn btn--primary">プランを相談する</a>
-        </div>
-
-        <!-- プレミアム（最上位）プラン -->
-        <div class="pricing-card fade-up" style="transition-delay:.2s; background: linear-gradient(145deg, #0f172a, #1e3a8a); border-color: #3b82f6;">
-          <div class="pricing-card__badge" style="background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #1e1e1e;">✦ MOST PREMIUM</div>
-          <div class="pricing-card__name" style="color: #93c5fd;">Executive</div>
-          <div class="pricing-card__price" style="color: #fff;">
-            <sup style="color:#fff">¥</sup>500,000<sub style="color:rgba(255,255,255,.6)">/年〜</sub>
-          </div>
-          <p class="pricing-card__desc" style="color:rgba(255,255,255,.6)">大企業・ハイトラフィックサービス向けフルカスタム</p>
-          <div class="pricing-card__divider" style="background:rgba(255,255,255,.15)"></div>
-          <ul class="pricing-card__features">
-            <li style="color:rgba(255,255,255,.9)">フルカスタムAIチャットボット開発</li>
-            <li style="color:rgba(255,255,255,.9)">独自LLMファインチューニング・RAG</li>
-            <li style="color:rgba(255,255,255,.9)">社内システム・API完全連携</li>
-            <li style="color:rgba(255,255,255,.9)">専任チームアサイン（3名以上）</li>
-            <li style="color:rgba(255,255,255,.9)">SLA保証・24時間365日サポート</li>
-            <li style="color:rgba(255,255,255,.9)">セキュリティ監査・ホワイトラベル対応</li>
-          </ul>
-          <a href="#contact" class="btn btn--primary" style="display:flex;width:100%;box-sizing:border-box;justify-content:center;align-items:center;background:#3b82f6">今すぐ相談する</a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== 実績セクション ===== -->
-  <section class="section achievements" id="achievements">
-    <div class="container">
-      <div class="section-head fade-up">
-        <span class="section-label">Our Track Record</span>
-        <h2 class="section-title">実績</h2>
-        <p class="section-desc" style="color:rgba(255,255,255,.65)">
-          多くの企業にAIチャットボットを導入し、業務効率化と顧客満足度向上を実現しています。
+      <div class="philosophy-item">
+        <p class="philosophy-number">03</p>
+        <h3 class="philosophy-title">時を超えるデザイン</h3>
+        <p class="philosophy-text">
+          流行を追わない。10年後も、20年後も、クローゼットの中でその価値を失わない服。時間をかけて愛着が深まる、そんな一着を届けたい。
         </p>
       </div>
-
-      <div class="achievements__grid">
-        <!-- 数値カード 1 -->
-        <div class="achievement-card fade-up">
-          <div class="achievement-card__num">
-            <span class="count-up" data-target="200">0</span><span>社+</span>
-          </div>
-          <div class="achievement-card__label">チャットボット導入実績</div>
-        </div>
-
-        <!-- 数値カード 2 -->
-        <div class="achievement-card fade-up" style="transition-delay:.1s">
-          <div class="achievement-card__num">
-            <span class="count-up" data-target="98">0</span><span>%</span>
-          </div>
-          <div class="achievement-card__label">顧客満足度</div>
-        </div>
-
-        <!-- 数値カード 3 -->
-        <div class="achievement-card fade-up" style="transition-delay:.2s">
-          <div class="achievement-card__num">
-            <span class="count-up" data-target="65">0</span><span>%</span>
-          </div>
-          <div class="achievement-card__label">平均問い合わせ対応時間削減率</div>
-        </div>
-      </div>
     </div>
   </section>
 
+  <!-- ストア -->
+  <section id="store">
+    <div class="section-header fade-in">
+      <div>
+        <p class="section-label">Flagship Store</p>
+        <h2 class="section-title">Our Stores</h2>
+      </div>
+    </div>
+    <div class="store-grid fade-in">
 
-  <!-- ===== お客様の声セクション ===== -->
-  <section class="section testimonials" id="testimonials">
-    <div class="container">
-      <div class="section-head fade-up">
-        <span class="section-label">Testimonials</span>
-        <h2 class="section-title">お客様の声</h2>
-        <p class="section-desc">
-          ご導入いただいたお客様から、嬉しいお声をいただいています。
+      <!-- 東京店 -->
+      <div class="store-item">
+        <div class="store-photo">
+          <div class="store-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <div class="store-info">
+          <h3 class="store-city">Tokyo</h3>
+          <p class="store-address">
+            〒107-0062<br>
+            東京都港区南青山 3-5-12 黒江ビル 1F
+          </p>
+          <p class="store-hours">Mon – Sat　11:00 – 20:00　／　Sun　12:00 – 18:00</p>
+        </div>
+      </div>
+
+      <!-- パリ店 -->
+      <div class="store-item">
+        <div class="store-photo">
+          <div class="store-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <div class="store-info">
+          <h3 class="store-city">Paris</h3>
+          <p class="store-address">
+            75006 Paris, France<br>
+            12 Rue de Sèvres, 75006
+          </p>
+          <p class="store-hours">Lun – Sam　10:00 – 19:00　／　Dim　Fermé</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand">MAISON KUROE</p>
+        <p class="footer-tagline">
+          静寂の中に宿る、衣の美学。<br>
+          東京とパリを繋ぐ、<br>
+          高級ファッションブランド。
         </p>
       </div>
-
-      <div class="testimonials__grid">
-
-        <!-- カード 1 -->
-        <div class="testi-card fade-up">
-          <div class="testi-card__stars">★★★★★</div>
-          <p class="testi-card__quote">
-            AIチャットボット導入後、カスタマーサポートへの問い合わせが
-            月300件から80件に激減しました。スタッフが本来の業務に集中できるようになり、
-            チーム全体の生産性が大幅に向上しました。
-          </p>
-          <div class="testi-card__person">
-            <img
-              class="testi-card__avatar"
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&q=80&auto=format&fit=crop&crop=face"
-              alt="田中 誠さん"
-            />
-            <div>
-              <div class="testi-card__name">田中 誠</div>
-              <div class="testi-card__role">カスタマーサービス部長 / EC事業会社</div>
-            </div>
-          </div>
+      <div>
+        <p class="footer-col-title">Collection</p>
+        <ul class="footer-links">
+          <li><a href="#">New Arrival</a></li>
+          <li><a href="#">Women</a></li>
+          <li><a href="#">Men</a></li>
+          <li><a href="#">Archive</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Brand</p>
+        <ul class="footer-links">
+          <li><a href="#">Story</a></li>
+          <li><a href="#">Philosophy</a></li>
+          <li><a href="#">Lookbook</a></li>
+          <li><a href="#">Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Newsletter</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Email address" />
+          <button type="button">→</button>
         </div>
-
-        <!-- カード 2 -->
-        <div class="testi-card fade-up" style="transition-delay:.1s">
-          <div class="testi-card__stars">★★★★★</div>
-          <p class="testi-card__quote">
-            社内向けFAQボットを導入したことで、新入社員の質問対応コストが
-            約70%削減されました。24時間いつでも回答できる点が特に好評で、
-            従業員満足度の向上にも繋がっています。
-          </p>
-          <div class="testi-card__person">
-            <img
-              class="testi-card__avatar"
-              src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&q=80&auto=format&fit=crop&crop=face"
-              alt="鈴木 花子さん"
-            />
-            <div>
-              <div class="testi-card__name">鈴木 花子</div>
-              <div class="testi-card__role">人事部マネージャー / 製造業</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- カード 3 -->
-        <div class="testi-card fade-up" style="transition-delay:.2s">
-          <div class="testi-card__stars">★★★★★</div>
-          <p class="testi-card__quote">
-            営業支援チャットボットの導入でリード獲得数が2.3倍になりました。
-            訪問者の質問にリアルタイムで対応し、資料請求や商談予約まで
-            自動化できた点が非常に効果的でした。
-          </p>
-          <div class="testi-card__person">
-            <img
-              class="testi-card__avatar"
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&auto=format&fit=crop&crop=face"
-              alt="山本 健太さん"
-            />
-            <div>
-              <div class="testi-card__name">山本 健太</div>
-              <div class="testi-card__role">マーケティング責任者 / SaaS企業</div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
-  </section>
-
-
-  <!-- ===== プレミアムプランセクション ===== -->
-  <section class="section premium" id="premium">
-    <div class="container">
-      <div class="premium__inner">
-
-        <!-- 左：訴求テキスト -->
-        <div class="fade-up">
-          <span class="section-label">Premium Plan</span>
-          <h2 class="section-title">最上位プランで、<br>AIの可能性を最大化。</h2>
-          <p class="premium__sub">
-            大企業・ハイトラフィックなサービスに対応した、
-            完全オーダーメイドのAIチャットボット開発プランです。
-            専任チームが企画から保守まで一気通貫で支援します。
-          </p>
-
-          <ul class="premium__features">
-            <li>専任エンジニアチームのアサイン</li>
-            <li>独自LLMのファインチューニング・RAG構築</li>
-            <li>社内システム・ERPとのフルAPI連携</li>
-            <li>SLA保証（稼働率99.9%以上）</li>
-            <li>24時間365日の優先サポート対応</li>
-            <li>セキュリティ監査・コンプライアンス対応</li>
-            <li>ホワイトラベル・OEM提供</li>
-          </ul>
-
-          <div class="premium__actions">
-            <a href="#contact" class="btn btn--primary">
-              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"/>
-              </svg>
-              今すぐ相談する
-            </a>
-          </div>
-        </div>
-
-        <!-- 右：プランカード -->
-        <div class="fade-up" style="transition-delay:.15s">
-          <div class="premium__card">
-            <div class="premium__card-badge">✦ MOST PREMIUM</div>
-            <div class="premium__card-name">Executive</div>
-            <div class="premium__card-price">
-              <sup>¥</sup>500,000<sub>/年〜</sub>
-            </div>
-            <p class="premium__card-desc">大企業・ハイトラフィックサービス向けフルカスタム</p>
-            <div class="premium__card-divider"></div>
-            <ul class="premium__card-features">
-              <li>フルカスタムAIチャットボット開発</li>
-              <li>独自LLMファインチューニング</li>
-              <li>RAG（検索拡張生成）構築</li>
-              <li>社内システム・API完全連携</li>
-              <li>専任チームアサイン（3名以上）</li>
-              <li>SLA保証・24時間サポート</li>
-              <li>セキュリティ監査・ホワイトラベル対応</li>
-            </ul>
-            <a href="#contact" class="btn btn--white">
-              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="18" height="18">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              プランについて問い合わせる
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== お問い合わせセクション ===== -->
-  <section class="section contact" id="contact">
-    <div class="container">
-      <div class="contact__centered">
-
-        <!-- 見出し（中央揃え） -->
-        <div class="section-head fade-up" style="text-align:center">
-          <span class="section-label">Contact</span>
-          <h2 class="section-title">お問い合わせ</h2>
-          <p class="section-desc" style="margin:0 auto">
-            サービス・料金・導入事例など、どんな小さなご質問もお気軽にどうぞ。
-            通常1〜2営業日以内にご返信します。
-          </p>
-        </div>
-
-        <!-- 連絡先カード（横並び） -->
-        <div class="contact__cards" style="flex-direction:row;margin-bottom:40px">
-          <!-- メール -->
-          <div class="contact__card" style="flex:1">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-            <div class="contact__card-text">
-              <strong>shoya041613@gmail.com</strong>
-              メールでのお問い合わせ
-            </div>
-          </div>
-          <!-- 営業時間 -->
-          <div class="contact__card" style="flex:1">
-            <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <div class="contact__card-text">
-              <strong>9:00〜18:00</strong>
-              営業時間（平日）
-            </div>
-          </div>
-        </div>
-
-        <!-- フォームエリア -->
-        <div class="fade-up">
-          <div class="form" id="contact-form-wrap">
-            <!-- フォーム本体 -->
-            <form id="contact-form" novalidate>
-              <div class="form__group">
-                <label class="form__label" for="company">
-                  会社名<span class="form__required">*</span>
-                </label>
-                <input class="form__input" type="text" id="company" name="company" placeholder="株式会社TAMOTO" />
-                <p class="form__error" id="company-err">会社名を入力してください。</p>
-              </div>
-
-              <div class="form__group">
-                <label class="form__label" for="name">
-                  お名前<span class="form__required">*</span>
-                </label>
-                <input class="form__input" type="text" id="name" name="name" placeholder="山田 太郎" />
-                <p class="form__error" id="name-err">お名前を入力してください。</p>
-              </div>
-
-              <div class="form__group">
-                <label class="form__label" for="email">
-                  メールアドレス<span class="form__required">*</span>
-                </label>
-                <input class="form__input" type="email" id="email" name="email" placeholder="example@company.co.jp" />
-                <p class="form__error" id="email-err">有効なメールアドレスを入力してください。</p>
-              </div>
-
-              <div class="form__group">
-                <label class="form__label" for="message">
-                  お問い合わせ内容<span class="form__required">*</span>
-                </label>
-                <textarea class="form__textarea" id="message" name="message" placeholder="ご相談内容をご記入ください。"></textarea>
-                <p class="form__error" id="message-err">お問い合わせ内容を入力してください。</p>
-              </div>
-
-              <button type="submit" class="btn btn--primary form__submit">
-                送信する
-              </button>
-            </form>
-
-            <!-- 送信後サンクスメッセージ -->
-            <div class="form__thanks" id="form-thanks">
-              <div class="form__thanks-icon">
-                <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-              <h3>送信が完了しました！</h3>
-              <p>お問い合わせありがとうございます。<br />1〜2営業日以内にご連絡いたします。</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== フッター ===== -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <!-- 左：ロゴとタグライン -->
-        <div>
-          <div class="footer__logo">株式会社<span>TAMOTO</span></div>
-          <div class="footer__tagline">会話AIで、ビジネスを変える。</div>
-        </div>
-
-        <!-- 右：ナビリンク -->
-        <nav class="footer__nav">
-          <div class="footer__nav-group">
-            <h4>Services</h4>
-            <ul>
-              <li><a href="#services">AIチャットボット開発</a></li>
-              <li><a href="#services">LLM連携・カスタムAI</a></li>
-              <li><a href="#services">会話UI/UXデザイン</a></li>
-              <li><a href="#services">AI導入コンサルティング</a></li>
-            </ul>
-          </div>
-          <div class="footer__nav-group">
-            <h4>Company</h4>
-            <ul>
-              <li><a href="#pricing">料金</a></li>
-              <li><a href="#achievements">実績</a></li>
-              <li><a href="#contact">お問い合わせ</a></li>
-              <li><a href="#">プライバシーポリシー</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-
-      <div class="footer__bottom">
-        &copy; 2025 株式会社TAMOTO. All rights reserved.
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 MAISON KUROE. All rights reserved.</p>
+      <div class="footer-sns">
+        <a href="#">Instagram</a>
+        <a href="#">X</a>
+        <a href="#">Pinterest</a>
       </div>
     </div>
   </footer>
 
+  <!-- ===== チャットボット ===== -->
 
-  <!-- ===== フローティングチャットボット ===== -->
-  <div class="chat-fab" id="chat-fab">
-    <!-- 開閉ボタン -->
-    <button class="chat-fab__btn" id="chat-toggle" aria-label="チャットを開く">
-      <!-- チャットアイコン -->
-      <svg class="icon-chat" fill="none" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+  <!-- 起動ボタン（ピルシェイプ）-->
+  <button class="chat-btn" id="chatBtn" aria-label="ブランドコンシェルジュを開く">
+    <!-- チャットバブルアイコン -->
+    <span class="chat-btn-icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
       </svg>
-      <!-- 閉じるアイコン -->
-      <svg class="icon-close" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-      </svg>
-    </button>
+    </span>
+    <!-- テキスト（通常状態）-->
+    <span class="chat-btn-text-wrap" aria-hidden="true">
+      <span class="chat-btn-label">Concierge</span>
+      <span class="chat-btn-sub">AI Chat</span>
+    </span>
+    <!-- 閉じる状態のテキスト -->
+    <span class="chat-btn-close-text" aria-hidden="true">Close</span>
+  </button>
 
-    <!-- 未読バッジ -->
-    <div class="chat-fab__badge" id="chat-badge">1</div>
+  <!-- チャットウィンドウ -->
+  <div class="chat-window" id="chatWindow" role="dialog" aria-label="MAISON KUROE Brand Concierge" aria-hidden="true">
 
-    <!-- チャットウィンドウ -->
-    <div class="chat-window" id="chat-window">
-      <!-- ヘッダー -->
-      <div class="chat-header">
-        <div class="chat-header__avatar">
-          <svg fill="none" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-          </svg>
-        </div>
-        <div class="chat-header__info">
-          <h3>TAMOTOサポート</h3>
-          <p>通常1〜2営業日以内に返信します</p>
-        </div>
+    <!-- ヘッダー -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <p class="chat-brand">MAISON KUROE</p>
+        <p class="chat-subtitle">Brand Concierge</p>
       </div>
+      <button class="chat-header-close" id="chatHeaderClose" aria-label="チャットを閉じる"></button>
+    </div>
 
-      <!-- メッセージ表示エリア -->
-      <div class="chat-body" id="chat-body"></div>
+    <!-- オンラインステータス -->
+    <div class="chat-status">
+      <span class="chat-status-dot"></span>
+      <span class="chat-status-text">Online</span>
+    </div>
 
-      <!-- テキスト入力エリア -->
-      <div class="chat-footer">
-        <textarea
-          class="chat-input"
-          id="chat-input"
-          placeholder="メッセージを入力..."
-          rows="1"
-          aria-label="メッセージを入力"
-        ></textarea>
-        <button class="chat-send" id="chat-send" aria-label="送信" disabled>
-          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-          </svg>
-        </button>
+    <!-- メッセージリスト -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- 初期ウェルカムメッセージ -->
+      <div class="chat-msg chat-msg--ai">
+        <div class="chat-msg-bubble">
+          ようこそ、MAISON KUROE へ。<br>
+          コレクションやストアについてのご質問など、お気軽にどうぞ。
+        </div>
       </div>
     </div>
+
+    <!-- 入力エリア -->
+    <div class="chat-input-area">
+      <input
+        type="text"
+        class="chat-input"
+        id="chatInput"
+        placeholder="メッセージを入力..."
+        maxlength="500"
+        autocomplete="off"
+      />
+      <button class="chat-send" id="chatSend" aria-label="送信">
+        <!-- 送信アイコン（ペーパープレーン） -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+
   </div>
+  <!-- ===== /チャットボット ===== -->
 
-
-  <!-- ===== JavaScript ===== -->
   <script>
-    /* ==========================================
-       ナビゲーション：スクロールで背景を付与
-    ========================================== */
-    const nav = document.getElementById('nav');
-    let lastScrollY = 0;
-
+    // スクロールでナビのスタイルを切り替え
+    const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
-      const currentY = window.scrollY;
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
 
-      /* 一定量スクロールしたら背景・影を付与 */
-      nav.classList.toggle('scrolled', currentY > 40);
-
-      /* 下スクロール かつ トップから80px以上離れたら隠す */
-      if (currentY > lastScrollY && currentY > 80) {
-        nav.classList.add('hidden');
-      } else {
-        /* 上スクロールで再表示 */
-        nav.classList.remove('hidden');
-      }
-
-      lastScrollY = currentY;
-    }, { passive: true });
-
-
-    /* ==========================================
-       ハンバーガーメニュー
-    ========================================== */
+    // ハンバーガーメニューの開閉
     const hamburger = document.getElementById('hamburger');
-    const drawer    = document.getElementById('drawer');
+    const navLinks  = document.getElementById('navLinks');
 
-    // ハンバーガーボタンのクリックで開閉
     hamburger.addEventListener('click', () => {
-      const isOpen = hamburger.classList.toggle('open');
-      drawer.classList.toggle('open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
     });
 
-    // ドロワー内のリンクをクリックしたら閉じる
-    drawer.querySelectorAll('a').forEach(link => {
+    navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        drawer.classList.remove('open');
-        document.body.style.overflow = '';
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-label', 'メニューを開く');
       });
     });
 
+    // スクロールでフェードインアニメーション
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-    /* ==========================================
-       スクロールアニメーション（Intersection Observer）
-    ========================================== */
-    const fadeEls = document.querySelectorAll('.fade-up');
+    // ルックブックのドラッグスクロール
+    const track = document.querySelector('.lookbook-track');
+    let isDragging = false, startX, scrollLeft;
 
-    const fadeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          fadeObserver.unobserve(entry.target); // 一度表示したら監視解除
-        }
-      });
-    }, { threshold: 0.12 });
-
-    fadeEls.forEach(el => fadeObserver.observe(el));
-
-
-    /* ==========================================
-       カウントアップアニメーション
-    ========================================== */
-    const countEls = document.querySelectorAll('.count-up');
-
-    const countObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-
-        const el     = entry.target;
-        const target = parseInt(el.dataset.target, 10);
-        const duration = 1800; // アニメーション時間（ms）
-        const start    = performance.now();
-
-        // easeOutQuart のイージング関数
-        const easeOut = t => 1 - Math.pow(1 - t, 4);
-
-        const tick = (now) => {
-          const elapsed  = now - start;
-          const progress = Math.min(elapsed / duration, 1);
-          el.textContent = Math.floor(easeOut(progress) * target);
-
-          if (progress < 1) requestAnimationFrame(tick);
-          else el.textContent = target; // 最終値を確定
-        };
-
-        requestAnimationFrame(tick);
-        countObserver.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-
-    countEls.forEach(el => countObserver.observe(el));
-
-
-    /* ==========================================
-       お問い合わせフォームのバリデーション
-    ========================================== */
-    const form      = document.getElementById('contact-form');
-    const formThanks = document.getElementById('form-thanks');
-
-    form.addEventListener('submit', (e) => {
+    track.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX     = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+    track.addEventListener('mouseleave', () => isDragging = false);
+    track.addEventListener('mouseup',    () => isDragging = false);
+    track.addEventListener('mousemove',  e => {
+      if (!isDragging) return;
       e.preventDefault();
-
-      let valid = true;
-
-      // 各フィールドのバリデーション
-      const fields = [
-        { id: 'company', errId: 'company-err', check: v => v.trim() !== '' },
-        { id: 'name',    errId: 'name-err',    check: v => v.trim() !== '' },
-        {
-          id: 'email', errId: 'email-err',
-          // 簡易メールアドレス形式チェック
-          check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
-        },
-        { id: 'message', errId: 'message-err', check: v => v.trim() !== '' },
-      ];
-
-      fields.forEach(({ id, errId, check }) => {
-        const input = document.getElementById(id);
-        const err   = document.getElementById(errId);
-        const ok    = check(input.value);
-
-        input.classList.toggle('error', !ok);
-        err.classList.toggle('visible', !ok);
-
-        if (!ok) valid = false;
-      });
-
-      if (!valid) return;
-
-      // バリデーション通過 → サンクスメッセージを表示
-      form.style.display = 'none';
-      formThanks.classList.add('visible');
+      track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX);
     });
 
-    // 入力時にエラー表示をリセット
-    form.querySelectorAll('.form__input, .form__textarea').forEach(input => {
-      input.addEventListener('input', () => {
-        input.classList.remove('error');
-        const err = document.getElementById(input.id + '-err');
-        if (err) err.classList.remove('visible');
-      });
-    });
+    // ===== チャットボット =====
 
+    const chatBtn         = document.getElementById('chatBtn');
+    const chatWindow      = document.getElementById('chatWindow');
+    const chatHeaderClose = document.getElementById('chatHeaderClose');
+    const chatMessages    = document.getElementById('chatMessages');
+    const chatInput       = document.getElementById('chatInput');
+    const chatSend        = document.getElementById('chatSend');
 
-    /* ==========================================
-       チャットボット（Claude AI 対応版）
-    ========================================== */
-    const chatToggle = document.getElementById('chat-toggle');
-    const chatWindow = document.getElementById('chat-window');
-    const chatBody   = document.getElementById('chat-body');
-    const chatBadge  = document.getElementById('chat-badge');
-    const chatInput  = document.getElementById('chat-input');
-    const chatSendBtn = document.getElementById('chat-send');
-
-    // 初期化フラグとメッセージ履歴
-    let chatInitialized = false;
+    // 会話履歴（Claude API に渡すメッセージ配列）
+    let messageHistory = [];
+    // ストリーミング中フラグ
     let isStreaming = false;
-    const messageHistory = []; // Claude API に渡す会話履歴
 
-    // クイックスタート選択肢
-    const QUICK_STARTS = [
-      { label: '🤖 チャットボット開発について', text: 'AIチャットボットの開発についてどのようなことができますか？' },
-      { label: '💰 料金・見積もりについて',      text: 'AIチャットボット開発の料金プランを教えてください。' },
-      { label: '⚡ 導入期間はどれくらい？',      text: 'チャットボット導入までの期間はどのくらいかかりますか？' },
-      { label: '📩 まずは相談したい',            text: 'AIチャットボットの導入を検討しています。どこから始めればいいですか？' },
-    ];
+    // パルスアニメーション終了後にクラスを付与して停止
+    chatBtn.addEventListener('animationend', () => {
+      chatBtn.classList.add('pulse-done');
+    }, { once: true });
 
-    // ===== 開閉 =====
-    chatToggle.addEventListener('click', () => {
-      const isOpen = chatToggle.classList.toggle('open');
-      chatWindow.classList.toggle('open', isOpen);
-      chatBadge.classList.add('hidden');
-      if (isOpen && !chatInitialized) {
-        chatInitialized = true;
-        initChat();
-      }
-      if (isOpen) chatInput.focus();
+    /** チャットウィンドウの開閉 */
+    function toggleChat() {
+      const willOpen = !chatWindow.classList.contains('is-open');
+      chatWindow.classList.toggle('is-open', willOpen);
+      chatWindow.setAttribute('aria-hidden', String(!willOpen));
+      chatBtn.classList.toggle('is-open', willOpen);
+      chatBtn.classList.add('pulse-done'); // 一度クリックしたらパルス停止
+      chatBtn.setAttribute('aria-label', willOpen ? 'コンシェルジュを閉じる' : 'ブランドコンシェルジュを開く');
+      if (willOpen) chatInput.focus();
+    }
+
+    chatBtn.addEventListener('click', toggleChat);
+    chatHeaderClose.addEventListener('click', toggleChat);
+
+    // ESC キーで閉じる
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && chatWindow.classList.contains('is-open')) toggleChat();
     });
 
-    // ===== チャット初期化 =====
-    function initChat() {
-      addBotMessage('こんにちは！👋 株式会社TAMOTOのAIアシスタントです。\nAIチャットボット開発に関するご質問、お気軽にどうぞ！', true);
+    /** メッセージバブルを追加して最下部へスクロール */
+    function appendMessage(role, text) {
+      const wrap   = document.createElement('div');
+      wrap.className = `chat-msg chat-msg--${role}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-msg-bubble';
+      bubble.textContent = text;
+
+      wrap.appendChild(bubble);
+      chatMessages.appendChild(wrap);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return bubble; // ストリーミング更新用に返す
     }
 
-    // ===== ボットメッセージを追加（静的テキスト用） =====
-    function addBotMessage(text, showQuickStarts = false) {
-      // 入力中インジケーターを表示
-      const typing = document.createElement('div');
-      typing.className = 'chat-msg chat-msg--bot';
-      typing.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
-      chatBody.appendChild(typing);
-      scrollChat();
+    /** タイピングインジケーターの追加・削除 */
+    function addTypingIndicator() {
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-msg chat-msg--ai';
+      wrap.id = 'chatTyping';
 
-      setTimeout(() => {
-        typing.remove();
+      const indicator = document.createElement('div');
+      indicator.className = 'chat-typing';
+      indicator.innerHTML = '<span></span><span></span><span></span>';
 
-        const msg = document.createElement('div');
-        msg.className = 'chat-msg chat-msg--bot';
-        // 改行文字を <br> に変換して表示
-        msg.innerHTML = `<div class="chat-msg__bubble">${text.replace(/\n/g, '<br>')}</div>`;
-        chatBody.appendChild(msg);
-
-        // クイックスタートボタンを表示
-        if (showQuickStarts) {
-          renderQuickStarts();
-        }
-        scrollChat();
-      }, 600);
+      wrap.appendChild(indicator);
+      chatMessages.appendChild(wrap);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // ===== クイックスタートボタンを描画 =====
-    function renderQuickStarts() {
-      const choices = document.createElement('div');
-      choices.className = 'chat-choices';
-
-      QUICK_STARTS.forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'chat-choice';
-        btn.textContent = item.label;
-        btn.addEventListener('click', () => {
-          choices.classList.add('disabled');
-          sendMessage(item.text);
-        });
-        choices.appendChild(btn);
-      });
-
-      chatBody.appendChild(choices);
-      scrollChat();
+    function removeTypingIndicator() {
+      const el = document.getElementById('chatTyping');
+      if (el) el.remove();
     }
 
-    // ===== ユーザーメッセージを表示 =====
-    function addUserMessage(text) {
-      const msg = document.createElement('div');
-      msg.className = 'chat-msg chat-msg--user';
-      msg.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(text)}</div>`;
-      chatBody.appendChild(msg);
-      scrollChat();
-    }
+    /** メッセージ送信 */
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isStreaming) return;
 
-    // ===== Claude API へリクエストを送り、JSONで応答を表示 =====
-    async function sendMessage(text) {
-      if (!text.trim() || isStreaming) return;
-
+      // 入力欄をクリア
+      chatInput.value = '';
       isStreaming = true;
-      setSendDisabled(true);
+      chatSend.disabled = true;
 
-      // ユーザーメッセージを表示・履歴に追加
-      addUserMessage(text);
+      // ユーザーメッセージを表示
+      appendMessage('user', text);
+
+      // 会話履歴に追加
       messageHistory.push({ role: 'user', content: text });
 
-      // 入力中インジケーターを表示
-      const typing = document.createElement('div');
-      typing.className = 'chat-msg chat-msg--bot';
-      typing.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
-      chatBody.appendChild(typing);
-      scrollChat();
+      // タイピングインジケーター表示
+      addTypingIndicator();
 
       try {
+        // SSE ストリーミングリクエスト
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: messageHistory }),
         });
 
-        const data = await response.json();
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        // 入力中インジケーターを除去してバブルを生成
-        typing.remove();
-        const botBubble = document.createElement('div');
-        botBubble.className = 'chat-msg chat-msg--bot';
-        chatBody.appendChild(botBubble);
+        // タイピングインジケーター削除 → AIバブルを追加
+        removeTypingIndicator();
+        const aiBubble = appendMessage('ai', '');
 
-        if (data.error) {
-          botBubble.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(data.error)}</div>`;
-        } else {
-          const replyText = data.text || '';
-          botBubble.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(replyText).replace(/\n/g, '<br>')}</div>`;
-          // 会話履歴にアシスタントの回答を追加
-          messageHistory.push({ role: 'assistant', content: replyText });
+        const reader  = response.body.getReader();
+        const decoder = new TextDecoder();
+        let aiText    = '';
+        let buffer    = '';
+
+        // SSE を逐次読み取り
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // 未完了行はバッファに残す
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const payload = line.slice(6).trim();
+            if (payload === '[DONE]') break;
+
+            try {
+              const parsed = JSON.parse(payload);
+              if (parsed.error) {
+                aiBubble.textContent = parsed.error;
+                break;
+              }
+              if (parsed.text) {
+                aiText += parsed.text;
+                aiBubble.textContent = aiText;
+                // スクロールを最下部に追従
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+            } catch {
+              // JSON パース失敗は無視
+            }
+          }
         }
 
-        scrollChat();
+        // 会話履歴に AI 応答を追加
+        if (aiText) messageHistory.push({ role: 'assistant', content: aiText });
 
-      } catch (error) {
-        console.error('チャットエラー:', error);
-        typing.remove();
-        const errBubble = document.createElement('div');
-        errBubble.className = 'chat-msg chat-msg--bot';
-        errBubble.innerHTML = '<div class="chat-msg__bubble">⚠️ 通信エラーが発生しました。しばらくしてから再度お試しください。</div>';
-        chatBody.appendChild(errBubble);
-        scrollChat();
+      } catch (err) {
+        removeTypingIndicator();
+        appendMessage('ai', '申し訳ございません。一時的な問題が発生しております。しばらくしてから再度お試しください。');
+        console.error('チャットエラー:', err);
       } finally {
         isStreaming = false;
-        setSendDisabled(false);
-        scrollChat();
+        chatSend.disabled = false;
         chatInput.focus();
       }
     }
 
-    // ===== 送信ボタンの有効/無効切替 =====
-    function setSendDisabled(disabled) {
-      chatSendBtn.disabled = disabled;
-    }
+    // 送信ボタンクリック
+    chatSend.addEventListener('click', sendMessage);
 
-    // ===== チャットエリアを最下部にスクロール =====
-    function scrollChat() {
-      requestAnimationFrame(() => {
-        chatBody.scrollTop = chatBody.scrollHeight;
-      });
-    }
-
-    // ===== XSS 対策：HTML エスケープ =====
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    // ===== テキストエリアの自動リサイズ =====
-    chatInput.addEventListener('input', () => {
-      chatInput.style.height = 'auto';
-      chatInput.style.height = Math.min(chatInput.scrollHeight, 80) + 'px';
-      setSendDisabled(!chatInput.value.trim() || isStreaming);
-    });
-
-    // ===== Enter キーで送信（Shift+Enter は改行） =====
-    chatInput.addEventListener('keydown', (e) => {
+    // Enter キーで送信（Shift+Enter は改行）
+    chatInput.addEventListener('keydown', e => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        const text = chatInput.value.trim();
-        if (text && !isStreaming) {
-          chatInput.value = '';
-          chatInput.style.height = 'auto';
-          setSendDisabled(true);
-          sendMessage(text);
-        }
-      }
-    });
-
-    // ===== 送信ボタンクリック =====
-    chatSendBtn.addEventListener('click', () => {
-      const text = chatInput.value.trim();
-      if (text && !isStreaming) {
-        chatInput.value = '';
-        chatInput.style.height = 'auto';
-        setSendDisabled(true);
-        sendMessage(text);
+        sendMessage();
       }
     });
   </script>
+
 </body>
 </html>
