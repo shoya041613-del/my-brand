@@ -4,7 +4,7 @@
     {
       "name": "Vite Dev Server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "frontend"],
       "port": 5173
     }
   ]

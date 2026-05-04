@@ -1,7 +1,7 @@
 # プロジェクト概要
 
 田本翔也のチャットボット付きホームページ。
-自己紹介ページに加え、訪問者と対話できるチャットボット機能を実装するプロジェクト。
+訪問者と対話できる AI チャットボット機能を搭載した、個人・企業向けコーポレートサイトを構築するプロジェクト。
 
 ---
 
@@ -29,12 +29,15 @@
 
 ```
 my-hp/
-├── index.html          # 企業コーポレートHP（ヒーロー / サービス / 実績 / お問い合わせ / チャットボット）
-├── server.js           # Express バックエンド（Claude API プロキシ）
+├── index.html          # メインページ（ヒーロー / サービス / 実績 / お問い合わせ / チャットボット）
+├── server.js           # Express バックエンド（Claude API プロキシ、開発用）
 ├── vite.config.js      # Vite 設定（/api を port 3001 にプロキシ）
+├── vercel.json         # Vercel デプロイ設定
 ├── .env                # APIキー設定（gitignore済み）
 ├── .env.example        # APIキー設定テンプレート
 ├── CLAUDE.md           # このファイル
+├── api/
+│   └── chat.js         # Vercel サーバーレス関数（本番環境用 /api/chat）
 └── .claude/
     └── launch.json     # 開発サーバー設定
 ```
@@ -47,15 +50,16 @@ my-hp/
 | ヒーロー | `#hero` | フルビューポート、キャッチコピー＋CTA |
 | サービス | `#services` | 6枚のサービスカードグリッド |
 | 料金プラン | `#pricing` | Light / Standard / Enterprise の3プラン |
-| 実績 | `#achievements` | カウントアップ数値3件、ネイビー背景 |
+| 実績 | `#achievements` | カウントアップ数値3件 |
 | お客様の声 | `#testimonials` | 顔写真付き3件のレビューカード |
 | お問い合わせ | `#contact` | バリデーション付きフォーム |
-| チャットボット | — | 右下フローティング、Claude AI ストリーミング対応 |
+| チャットボット | — | 右下フローティング、Claude AI 対応 |
 
 ## チャットボット アーキテクチャ
 
-- **フロントエンド（index.html）**：テキスト入力 + SSEストリーミング受信
-- **バックエンド（server.js）**：Express + `@anthropic-ai/sdk`、`POST /api/chat` エンドポイント
+- **フロントエンド（index.html）**：テキスト入力 + JSON レスポンス受信
+- **バックエンド（server.js）**：Express + `@anthropic-ai/sdk`、`POST /api/chat` エンドポイント（開発用）
+- **本番環境（api/chat.js）**：Vercel サーバーレス関数として動作
 - **モデル**：`claude-haiku-4-5`（高速・低コスト）
 - **会話管理**：フロントエンドで `messageHistory` を保持し複数ターン対応
 

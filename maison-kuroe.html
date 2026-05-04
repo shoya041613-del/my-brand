@@ -1799,10 +1799,7 @@
             try {
               const parsed = JSON.parse(payload);
               if (parsed.error) {
-                // エラーメッセージを品のある表示に整形
                 aiBubble.textContent = parsed.error;
-                aiBubble.style.fontStyle = 'italic';
-                aiBubble.style.opacity  = '0.75';
                 break;
               }
               if (parsed.text) {
