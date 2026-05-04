@@ -1,88 +1,46 @@
 /**
- * Vercel サーバーレス関数：チャットAPI
- * Claude Haiku を使った通常レスポンス（Vercel対応）
+ * Vercel サーバーレス関数：MAISON KUROE ブランドコンシェルジュ チャットAPI
+ * SSE ストリーミング形式でレスポンスを返す
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
 
-// システムプロンプト
-const SYSTEM_PROMPT = `あなたは株式会社TAMOTOのAIサポートアシスタントです。
-以下の自社情報をもとに、訪問者の質問に丁寧かつ簡潔にお答えください。
-記載されていない情報については「詳しくはお問い合わせください」とご案内ください。
+// MAISON KUROE ブランドコンシェルジュのシステムプロンプト
+const SYSTEM_PROMPT = `あなたはMAISON KUROE（メゾン・クロエ）のブランドコンシェルジュAIです。
+東京・南青山とパリ・サンジェルマンに旗艦店を構える高級ファッションブランドとして、
+訪問者に上質で洗練されたサービスをご提供ください。
 
-【サービス名】
-（あなたのサービス名を入力）
+【ブランドについて】
+- ブランド名: MAISON KUROE（メゾン・クロエ）
+- コンセプト: 「静寂の中に宿る、衣の美学」
+- 創設の背景: 東京とパリの美意識を融合させた高級ファッションブランド
+- デザイン哲学: 無駄を削ぎ落とした純粋な美しさ。素材の質感と職人技術を最大限に活かした、ミニマルかつラグジュアリーなデザイン
 
-【サービス内容】
-（提供しているサービス・商品の説明を入力）
+【最新コレクション】
+- Silk Atelier Coat ¥198,000 ― シルク100%のアトリエコート。繊細な光沢と優雅なシルエットが特徴
+- Wool Drape Dress ¥128,000 ― 上質ウールによるドレープドレス。身体の動きに寄り添う流れるようなラインが美しい
+- Suede Chelsea Boots ¥128,000 ― スエード素材のチェルシーブーツ。職人が丁寧に仕上げた一足
+- Cashmere Wide Trousers ¥88,000 ― カシミア混のワイドトラウザーズ。上品な落ち感が洗練された装いを演出
+- Organza Blouse ¥72,000 ― 透け感が美しいオーガンザブラウス。光を纏うような軽やかな着心地
+- Leather Strappy Heels ¥98,000 ― レザーストラッピーヒール。繊細なストラップデザインが足元を優雅に彩る
 
-【料金】
-- LIGHT：¥50,000/年
-- STANDARD：¥150,000/年
-- EXECUTIVE：¥500,000/年
-
-【営業時間・連絡先】
-- 営業時間：9:00〜18:00（平日）
-- メールアドレス：shoya041613@gmail.com
-- お問い合わせフォーム：ページ下部からも受け付けています
-
-【よくある質問と回答】
-Q. AIチャットボットとは何ですか？
-A. AIチャットボットとは、ユーザーからの問い合わせに対して自動で回答するプログラムです。24時間対応が可能で、問い合わせ対応の効率化や人件費削減に貢献します。
-
-Q. どのような企業に向いていますか？
-A. 問い合わせ対応が多い企業や、人手不足に課題を感じている企業に特におすすめです。業種を問わず導入可能です。
-
-Q. 導入すると何が改善されますか？
-A. 問い合わせ対応の自動化により、対応時間の短縮、業務負担の軽減、顧客満足度の向上が期待できます。
-
-Q. どんな質問に対応できますか？
-A. よくある質問（FAQ）、商品・サービスの案内、予約受付、問い合わせ一次対応など幅広く対応可能です。
-
-Q. 自社の情報を学習させることはできますか？
-A. はい、可能です。マニュアルやFAQデータをもとに最適化された回答を生成します。
-
-Q. LINEやWebサイトに設置できますか？
-A. はい、Webサイト・LINE・その他SNSなどに対応可能です。
-
-Q. 導入費用はいくらですか？
-A. ご要望や機能によって異なりますが、最適なプランをご提案いたします。まずはお気軽にご相談ください。
-
-Q. 導入までどれくらいかかりますか？
-A. 最短で〇日〜〇週間程度で導入可能です。内容により前後します。
-
-Q. 初期費用はかかりますか？
-A. プランにより異なりますが、初期費用あり・なしどちらもご用意可能です。
-
-Q. 導入後のサポートはありますか？
-A. はい、運用サポートや改善提案など継続的にサポートいたします。
-
-Q. 回答内容の修正はできますか？
-A. はい、いつでも更新可能です。運用しながら改善していけます。
-
-Q. AIの回答精度はどのくらいですか？
-A. 初期段階でも高精度ですが、運用データをもとに継続的に改善されていきます。
-
-Q. セキュリティは大丈夫ですか？
-A. データ管理・通信の安全性に配慮し、安心してご利用いただける環境を提供しています。
-
-Q. 個人情報の取り扱いはどうなりますか？
-A. 適切な管理体制のもとで取り扱い、外部に漏れることはありません。
-
-【会社情報】
-- 会社名：株式会社TAMOTO
-- 代表者：田本翔也
+【店舗情報】
+- 東京店（旗艦店）: 〒107-0062 東京都港区南青山 3-5-12 黒江ビル 1F
+  営業時間: Mon – Sat　11:00 – 20:00　／　Sun　12:00 – 18:00
+- パリ店: 12 Rue de Sèvres, 75006 Paris, France
+  営業時間: Lun – Sam　10:00 – 19:00　／　Dim　Fermé
 
 【対応方針】
-- 常に丁寧で親しみやすい日本語でお答えください
-- 専門用語は分かりやすく説明してください
-- 料金・プラン・詳細な相談はページ下部のお問い合わせフォームへご案内ください
-- 営業時間外の問い合わせには「平日9:00〜18:00、またはメール（shoya041613@gmail.com）にてご連絡ください」とお伝えください
-- 回答は簡潔に（長くても200文字程度）まとめてください
-- 絵文字を適度に使って親しみやすい雰囲気を演出してください`;
+- 上品で洗練された日本語でお答えください
+- 日本語でのご質問には日本語で、英語でのご質問には英語でお答えください
+- 簡潔かつ的確に、200文字以内でお答えください
+- 掲載されていない詳細についてはストアへのご来店またはお問い合わせをご案内ください
+- 絵文字は使わず、品のある文体を維持してください
+- MAISON KUROEのブランド価値観（洗練・静謐・上質）を体現したトーンでお話しください
+- 価格帯に見合った、誠実で格調ある接客スタイルを心がけてください`;
 
 module.exports = async (req, res) => {
-  // CORSヘッダー
+  // CORS ヘッダー
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -92,7 +50,7 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
 
-  // POSTメソッド以外は拒否
+  // POST 以外は拒否
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -105,13 +63,22 @@ module.exports = async (req, res) => {
   }
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY が設定されていません' });
+    // SSE 形式でエラーを返す
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.write(`data: ${JSON.stringify({ error: '現在コンシェルジュサービスをご利用いただけません。しばらくしてから再度お試しください。' })}\n\n`);
+    res.write('data: [DONE]\n\n');
+    return res.end();
   }
 
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+  // SSE ヘッダーを設定
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
   try {
-    // 通常レスポンス（非ストリーミング）
+    // Claude API にリクエスト（非ストリーミング）
     const response = await client.messages.create({
       model: 'claude-haiku-4-5',
       max_tokens: 512,
@@ -120,18 +87,24 @@ module.exports = async (req, res) => {
     });
 
     const text = response.content[0].text;
-    return res.status(200).json({ text });
+
+    // SSE 形式で返す（フロントエンドの SSE リーダーと互換）
+    res.write(`data: ${JSON.stringify({ text })}\n\n`);
+    res.write('data: [DONE]\n\n');
+    res.end();
 
   } catch (error) {
     console.error('Claude API エラー:', error.message);
 
-    let userMsg = '⚠️ エラーが発生しました。しばらくしてから再度お試しください。';
+    let userMsg = '申し訳ございません。一時的な問題が発生しております。しばらくしてから再度お試しください。';
     if (error.message?.includes('credit balance')) {
-      userMsg = '⚠️ 現在AIチャットをご利用いただけません。お問い合わせは下部のフォームをご利用ください。';
+      userMsg = '現在コンシェルジュサービスをご利用いただけません。ストアまでお問い合わせください。';
     } else if (error.message?.includes('invalid_api_key')) {
-      userMsg = '⚠️ APIキーの設定に問題があります。管理者にお問い合わせください。';
+      userMsg = 'システムエラーが発生しました。管理者にお問い合わせください。';
     }
 
-    return res.status(500).json({ error: userMsg });
+    res.write(`data: ${JSON.stringify({ error: userMsg })}\n\n`);
+    res.write('data: [DONE]\n\n');
+    res.end();
   }
 };
