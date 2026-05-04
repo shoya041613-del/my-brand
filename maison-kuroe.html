@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON KUROE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* リセット & 基本設定 */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black:      #0c0c0c;
+      --cream:      #f4efe8;
+      --gold:       #c9a96e;
+      --gray:       #8c8c8c;
+      --light-gray: #e8e3dc;
+      --white:      #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      background: var(--cream);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ===== ナビゲーション ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      transition: background 0.4s, padding 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(244, 239, 232, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 16px 48px;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      color: var(--white);
+      transition: color 0.4s;
+    }
+
+    nav.scrolled .nav-logo { color: var(--black); }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--white);
+      transition: color 0.4s, opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 0.6; }
+    nav.scrolled .nav-links a { color: var(--black); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--white);
+      transition: background 0.4s;
+    }
+
+    nav.scrolled .hamburger span { background: var(--black); }
+
+    /* ===== ヒーロー ===== */
+    #hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* ヒーロー背景画像 */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1920&q=90&fit=crop&crop=center');
+      background-size: cover;
+      background-position: center top;
+      transform: scale(1.05);
+      transition: transform 8s ease;
+    }
+
+    #hero:hover .hero-bg { transform: scale(1.08); }
+
+    /* 暗めのオーバーレイ */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.65) 0%,
+        rgba(0,0,0,0.45) 50%,
+        rgba(0,0,0,0.75) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-subtitle {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      text-indent: 0.4em; /* letter-spacing末尾ずれ補正 */
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(56px, 10vw, 120px);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-indent: 0.15em; /* letter-spacing末尾ずれ補正 */
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1.2s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-desc {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-indent: 0.25em; /* letter-spacing末尾ずれ補正 */
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 0.8s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-indent: 0.3em; /* letter-spacing末尾ずれ補正 */
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 16px 40px;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s ease 1s forwards;
+    }
+
+    .hero-cta:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--black);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.5s forwards;
+    }
+
+    .hero-scroll span {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      /* text-indentは使わず、親要素のleft:50%+translateXで正確にセンタリング */
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 48px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    /* ===== コレクション ===== */
+    #collection {
+      padding: 120px 48px;
+      background: var(--cream);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+    }
+
+    .section-link {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 4px;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .section-link:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    /* 全アイテム同じ高さに統一（span 2 削除）*/
+
+    .collection-photo {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+
+    /* コレクション写真：実際の画像 */
+    .collection-photo-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center center; /* 水平・垂直ともに中央に固定 */
+      transition: transform 0.8s ease;
+    }
+
+    .collection-item:hover .collection-photo-inner { transform: scale(1.06); }
+
+    .collection-info { padding: 20px 0 0; }
+
+    .collection-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .collection-meta {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+    }
+
+    /* ===== ブランドストーリー ===== */
+    #story {
+      padding: 120px 48px;
+      background: var(--black);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .story-image {
+      aspect-ratio: 4/5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ストーリー写真：実際の画像 */
+    .story-image-inner {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=85&fit=crop&crop=center');
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.8s ease;
+    }
+
+    .story-image:hover .story-image-inner { transform: scale(1.04); }
+
+    /* 画像の上に暗めのオーバーレイ */
+    .story-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .story-image-border {
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .story-content .section-title {
+      color: var(--white);
+      margin-bottom: 40px;
+    }
+
+    .story-text {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 2.1;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+
+    .story-cta {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.4);
+      padding-bottom: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .story-cta:hover { border-color: var(--gold); }
+
+    /* ===== ルックブック ===== */
+    #lookbook {
+      padding: 120px 0;
+      background: var(--cream);
+      overflow: hidden;
+    }
+
+    .lookbook-header {
+      padding: 0 48px;
+      margin-bottom: 64px;
+    }
+
+    .lookbook-track {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 48px;
+      cursor: grab;
+    }
+
+    .lookbook-track::-webkit-scrollbar { display: none; }
+    .lookbook-track:active { cursor: grabbing; }
+
+    .lookbook-item { flex-shrink: 0; width: 320px; }
+
+    .lookbook-photo {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+
+    /* ルックブック写真：実際の画像 */
+    .lookbook-photo-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center top;
+      transition: transform 0.8s ease;
+    }
+
+    .lookbook-item:hover .lookbook-photo-inner { transform: scale(1.05); }
+
+    .lookbook-caption {
+      padding: 16px 0 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gray);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== フィロソフィー ===== */
+    #philosophy {
+      padding: 120px 48px;
+      background: var(--black);
+      text-align: center;
+    }
+
+    #philosophy .section-header {
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+
+    .philosophy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .philosophy-item {
+      padding: 64px 48px;
+      border: 1px solid rgba(201, 169, 110, 0.15);
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .philosophy-item:hover {
+      border-color: rgba(201, 169, 110, 0.4);
+      background: rgba(201, 169, 110, 0.03);
+    }
+
+    .philosophy-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      color: rgba(201, 169, 110, 0.3);
+      margin-bottom: 32px;
+    }
+
+    .philosophy-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--white);
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+
+    .philosophy-text {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 2;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.03em;
+      text-align: left;
+    }
+
+    /* ===== ストア ===== */
+    #store {
+      padding: 120px 48px;
+      background: var(--cream);
+    }
+
+    .store-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 64px;
+    }
+
+    .store-item { overflow: hidden; }
+
+    .store-photo {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    /* ストア写真：実際の画像 */
+    .store-photo-inner {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.8s ease;
+    }
+
+    .store-item:hover .store-photo-inner { transform: scale(1.04); }
+
+    .store-info { padding: 32px 0 0; }
+
+    .store-city {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .store-address {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    .store-hours {
+      margin-top: 16px;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+
+    /* ===== フッター ===== */
+    footer {
+      background: var(--black);
+      padding: 80px 48px 40px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 40px;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.9;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-col-title {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 12px;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--white); }
+
+    .footer-newsletter { display: flex; margin-top: 8px; }
+
+    .footer-newsletter input {
+      flex: 1;
+      padding: 12px 16px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-right: none;
+      color: var(--white);
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.1em;
+      outline: none;
+    }
+
+    .footer-newsletter input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .footer-newsletter button {
+      padding: 12px 20px;
+      background: var(--gold);
+      border: none;
+      font-size: 10px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      color: var(--black);
+      transition: opacity 0.2s;
+    }
+
+    .footer-newsletter button:hover { opacity: 0.8; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-sns { display: flex; gap: 24px; }
+
+    .footer-sns a {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-sns a:hover { color: var(--gold); }
+
+    /* ===== グレインテクスチャ（高級感演出）===== */
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ===== コレクションアイテム ラベル ===== */
+    .collection-photo { position: relative; }
+
+    .collection-photo-label {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(201,169,110,0.9);
+      color: var(--black);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 1;
+    }
+
+    .collection-item:hover .collection-photo-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== セクション区切り線 ===== */
+    .section-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    /* ===== スクロールバー非表示（全体）===== */
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+
+    /* ===== ===== アニメーション ===== */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== レスポンシブ（タブレット） ===== */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+
+      .nav-links {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--black);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        z-index: 99;
+      }
+
+      .nav-links.open { display: flex; }
+      .nav-links a { font-size: 14px; color: var(--white) !important; }
+      .hamburger { display: flex; z-index: 101; }
+
+      #collection { padding: 80px 24px; }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 24px;
+      }
+
+      .collection-grid { grid-template-columns: 1fr 1fr; }
+
+      .collection-item:first-child .collection-photo {
+        aspect-ratio: 3/4;
+        height: auto;
+      }
+
+      #story {
+        padding: 80px 24px;
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      #lookbook { padding: 80px 0; }
+      .lookbook-header { padding: 0 24px; }
+      .lookbook-track { padding: 0 24px; }
+      .lookbook-item { width: 240px; }
+
+      #philosophy { padding: 80px 24px; }
+      .philosophy-grid { grid-template-columns: 1fr; }
+      .philosophy-item { padding: 40px 32px; }
+
+      #store { padding: 80px 24px; }
+      .store-grid { grid-template-columns: 1fr; }
+
+      footer { padding: 64px 24px 32px; }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+
+      .footer-top > div:first-child { grid-column: span 2; }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    /* ===== レスポンシブ（スマートフォン） ===== */
+    @media (max-width: 480px) {
+      .hero-title { letter-spacing: 0.08em; }
+
+      .collection-grid { grid-template-columns: 1fr; }
+
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-top > div:first-child { grid-column: span 1; }
+    }
+
+    /* ===== チャットボット ===== */
+
+    /* 起動ボタン（右下フローティング・ピルシェイプ）*/
+    .chat-btn {
+      position: fixed;
+      bottom: 36px;
+      right: 36px;
+      z-index: 200;
+      height: 50px;
+      padding: 0 22px 0 18px;
+      border-radius: 999px;
+      background: var(--black);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, padding 0.25s ease;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,169,110,0.1);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* 注目を引くための微細なパルスグロー */
+    @keyframes chatPulse {
+      0%, 100% { box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,169,110,0.1); }
+      50%       { box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 16px rgba(201,169,110,0.2), 0 0 0 1px rgba(201,169,110,0.3); }
+    }
+
+    /* 初回表示時のみパルスを3回 */
+    .chat-btn:not(.is-open):not(.pulse-done) {
+      animation: chatPulse 2s ease-in-out 1s 3;
+    }
+
+    .chat-btn:hover {
+      transform: translateY(-2px);
+      background: #161610;
+      box-shadow: 0 8px 36px rgba(0,0,0,0.5), 0 0 20px rgba(201,169,110,0.2), 0 0 0 1px rgba(201,169,110,0.4);
+    }
+
+    /* ボタンが開いている状態（コンパクトに縮む）*/
+    .chat-btn.is-open {
+      background: #161610;
+      padding: 0 18px;
+      gap: 8px;
+    }
+
+    /* チャットバブルアイコン */
+    .chat-btn-icon {
+      flex-shrink: 0;
+      color: var(--gold);
+      transition: opacity 0.2s, transform 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .chat-btn.is-open .chat-btn-icon { opacity: 0; width: 0; overflow: hidden; }
+
+    /* ボタンテキストエリア */
+    .chat-btn-text-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .chat-btn.is-open .chat-btn-text-wrap { opacity: 0; width: 0; overflow: hidden; }
+
+    /* "CONCIERGE" メインラベル */
+    .chat-btn-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* "AI Chat" サブラベル */
+    .chat-btn-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: rgba(201,169,110,0.5);
+      text-transform: uppercase;
+      user-select: none;
+      line-height: 1;
+    }
+
+    /* 閉じる状態のテキスト（is-open 時のみ表示）*/
+    .chat-btn-close-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: rgba(201,169,110,0.7);
+      text-transform: uppercase;
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      transition: opacity 0.2s;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 閉じる × アイコン */
+    .chat-btn-close-text::before {
+      content: '×';
+      font-size: 14px;
+      color: var(--gold);
+      font-weight: 300;
+    }
+
+    .chat-btn.is-open .chat-btn-close-text {
+      opacity: 1;
+      width: auto;
+    }
+
+    /* チャットウィンドウ */
+    .chat-window {
+      position: fixed;
+      bottom: 104px;
+      right: 36px;
+      z-index: 199;
+      width: 360px;
+      max-width: calc(100vw - 48px);
+      background: #0d0d0b;
+      border: 1px solid rgba(201,169,110,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* 初期状態：非表示 */
+      opacity: 0;
+      transform: translateY(20px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,169,110,0.1);
+    }
+
+    .chat-window.is-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+
+    /* ヘッダー */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 18px;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+      background: #0d0d0b;
+    }
+
+    .chat-header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .chat-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .chat-subtitle {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: rgba(201,169,110,0.6);
+      text-transform: uppercase;
+    }
+
+    /* ヘッダーの閉じるボタン */
+    .chat-header-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(201,169,110,0.5);
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .chat-header-close:hover { color: var(--gold); }
+
+    .chat-header-close::before,
+    .chat-header-close::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .chat-header-close::before { transform: rotate(45deg); }
+    .chat-header-close::after  { transform: rotate(-45deg); }
+
+    /* ステータスインジケーター */
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 24px;
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+
+    .chat-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf7d;
+      box-shadow: 0 0 6px rgba(76,175,125,0.6);
+    }
+
+    .chat-status-text {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: rgba(244,239,232,0.4);
+      text-transform: uppercase;
+    }
+
+    /* メッセージエリア */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 320px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,169,110,0.2) transparent;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); border-radius: 2px; }
+
+    /* メッセージバブル（AI） */
+    .chat-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 88%;
+    }
+
+    .chat-msg--ai { align-self: flex-start; }
+    .chat-msg--user { align-self: flex-end; }
+
+    .chat-msg-bubble {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.65;
+      letter-spacing: 0.02em;
+    }
+
+    /* AIメッセージ：暗いグレー地、クリーム文字 */
+    .chat-msg--ai .chat-msg-bubble {
+      background: rgba(244,239,232,0.06);
+      color: rgba(244,239,232,0.88);
+      border: 1px solid rgba(244,239,232,0.08);
+      border-radius: 2px 12px 12px 12px;
+    }
+
+    /* ユーザーメッセージ：ゴールド地 */
+    .chat-msg--user .chat-msg-bubble {
+      background: rgba(201,169,110,0.14);
+      color: rgba(244,239,232,0.9);
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 12px 2px 12px 12px;
+    }
+
+    /* タイピングインジケーター */
+    .chat-typing {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 16px;
+      background: rgba(244,239,232,0.06);
+      border: 1px solid rgba(244,239,232,0.08);
+      border-radius: 2px 12px 12px 12px;
+      width: fit-content;
+    }
+
+    .chat-typing span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.6);
+      animation: typingDot 1.4s infinite ease-in-out;
+    }
+
+    .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typingDot {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+      40%            { transform: scale(1);   opacity: 1;   }
+    }
+
+    /* 入力エリア */
+    .chat-input-area {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 14px 16px;
+      border-top: 1px solid rgba(201,169,110,0.15);
+      background: #0a0a08;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(244,239,232,0.85);
+      letter-spacing: 0.02em;
+      padding: 4px 0;
+    }
+
+    .chat-input::placeholder {
+      color: rgba(244,239,232,0.25);
+      font-style: italic;
+    }
+
+    .chat-send {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(201,169,110,0.5);
+      transition: color 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chat-send:hover {
+      color: var(--gold);
+      transform: translateX(2px);
+    }
+
+    .chat-send:disabled {
+      opacity: 0.3;
+      cursor: default;
+      transform: none;
+    }
+
+    /* モバイル対応 */
+    @media (max-width: 480px) {
+      .chat-btn  { bottom: 20px; right: 16px; height: 46px; padding: 0 18px 0 14px; }
+      .chat-window {
+        bottom: 84px;
+        right: 16px;
+        width: calc(100vw - 32px);
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ナビゲーション -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">MAISON KUROE</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#lookbook">Lookbook</a></li>
+      <li><a href="#store">Store</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- ヒーローセクション -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-content">
+      <p class="hero-subtitle">Spring / Summer 2026</p>
+      <h1 class="hero-title">MAISON<br><em>KUROE</em></h1>
+      <p class="hero-desc">静寂の中に宿る、衣の美学</p>
+      <a href="#collection" class="hero-cta">View Collection</a>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- コレクションセクション -->
+  <section id="collection">
+    <div class="section-header fade-in">
+      <div>
+        <p class="section-label">New Arrival</p>
+        <h2 class="section-title">2026 S/S<br>Collection</h2>
+      </div>
+      <a href="#" class="section-link">View All</a>
+    </div>
+    <div class="collection-grid fade-in">
+
+      <!-- アイテム1：メインビジュアル（縦長） -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=900&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Silk Atelier Coat</p>
+          <p class="collection-meta">¥198,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム2 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Wool Drape Dress</p>
+          <p class="collection-meta">¥128,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム3 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Suede Chelsea Boots</p>
+          <p class="collection-meta">¥128,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム4 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Cashmere Wide Trousers</p>
+          <p class="collection-meta">¥88,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム5 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1585914924626-15adac1e6402?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Organza Blouse</p>
+          <p class="collection-meta">¥72,000</p>
+        </div>
+      </div>
+
+      <!-- アイテム6 -->
+      <div class="collection-item">
+        <div class="collection-photo">
+          <div class="collection-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=700&q=85&fit=crop&crop=center');">
+          </div>
+          <span class="collection-photo-label">New</span>
+        </div>
+        <div class="collection-info">
+          <p class="collection-name">Leather Strappy Heels</p>
+          <p class="collection-meta">¥98,000</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ブランドストーリー -->
+  <section id="story">
+    <div class="story-image fade-in">
+      <div class="story-image-inner"></div>
+      <div class="story-image-overlay"></div>
+      <div class="story-image-border"></div>
+    </div>
+    <div class="story-content fade-in">
+      <p class="section-label">Brand Story</p>
+      <h2 class="section-title">黒江の美学、<br>パリの精神</h2>
+      <p class="story-text">
+        MAISON KUROEは2018年、デザイナー・黒江燈（くろえ あかり）によって東京・南青山に創設されました。幼少期に祖母から受け継いだ和裁の記憶と、パリのアトリエで磨いたオートクチュールの技術。そのふたつが交差する場所に、このブランドは生まれました。
+      </p>
+      <p class="story-text">
+        「着ることは、沈黙の詩だ」——黒江はそう語ります。派手な主張より、余白の美しさを。流行より、時を超える質感を。一枚の衣が纏う人の内側を静かに照らすような、そんな服づくりを追求しています。
+      </p>
+      <a href="#" class="story-cta">Read More</a>
+    </div>
+  </section>
+
+  <!-- ルックブック -->
+  <section id="lookbook">
+    <div class="lookbook-header fade-in">
+      <p class="section-label">Editorial</p>
+      <h2 class="section-title">Lookbook 2026</h2>
+    </div>
+    <div class="lookbook-track fade-in">
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「静寂の庭」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「光と影」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1521341957697-b93449760f30?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「余白の詩」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「刻の衣」</p>
+      </div>
+
+      <div class="lookbook-item">
+        <div class="lookbook-photo">
+          <div class="lookbook-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1488161628813-04466f872be2?w=600&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <p class="lookbook-caption">「黒と金」</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- フィロソフィー -->
+  <section id="philosophy">
+    <div class="section-header fade-in">
+      <p class="section-label">Our Values</p>
+      <h2 class="section-title" style="color: var(--white);">Philosophy</h2>
+    </div>
+    <div class="philosophy-grid fade-in">
+      <div class="philosophy-item">
+        <p class="philosophy-number">01</p>
+        <h3 class="philosophy-title">静寂の美</h3>
+        <p class="philosophy-text">
+          声高に語る必要はない。一枚の布が持つ佇まい、縫い目の緊張感、裏地の手触り——見えない場所にこそ、本物の美しさは宿る。
+        </p>
+      </div>
+      <div class="philosophy-item">
+        <p class="philosophy-number">02</p>
+        <h3 class="philosophy-title">素材への敬意</h3>
+        <p class="philosophy-text">
+          シルク、ウール、リネン。すべての素材はそれぞれの言語を持つ。私たちはその声に耳を傾け、素材が本来持つ生命力を最大限に引き出す。
+        </p>
+      </div>
+      <div class="philosophy-item">
+        <p class="philosophy-number">03</p>
+        <h3 class="philosophy-title">時を超えるデザイン</h3>
+        <p class="philosophy-text">
+          流行を追わない。10年後も、20年後も、クローゼットの中でその価値を失わない服。時間をかけて愛着が深まる、そんな一着を届けたい。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ストア -->
+  <section id="store">
+    <div class="section-header fade-in">
+      <div>
+        <p class="section-label">Flagship Store</p>
+        <h2 class="section-title">Our Stores</h2>
+      </div>
+    </div>
+    <div class="store-grid fade-in">
+
+      <!-- 東京店 -->
+      <div class="store-item">
+        <div class="store-photo">
+          <div class="store-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <div class="store-info">
+          <h3 class="store-city">Tokyo</h3>
+          <p class="store-address">
+            〒107-0062<br>
+            東京都港区南青山 3-5-12 黒江ビル 1F
+          </p>
+          <p class="store-hours">Mon – Sat　11:00 – 20:00　／　Sun　12:00 – 18:00</p>
+        </div>
+      </div>
+
+      <!-- パリ店 -->
+      <div class="store-item">
+        <div class="store-photo">
+          <div class="store-photo-inner"
+            style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=85&fit=crop&crop=center');">
+          </div>
+        </div>
+        <div class="store-info">
+          <h3 class="store-city">Paris</h3>
+          <p class="store-address">
+            75006 Paris, France<br>
+            12 Rue de Sèvres, 75006
+          </p>
+          <p class="store-hours">Lun – Sam　10:00 – 19:00　／　Dim　Fermé</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand">MAISON KUROE</p>
+        <p class="footer-tagline">
+          静寂の中に宿る、衣の美学。<br>
+          東京とパリを繋ぐ、<br>
+          高級ファッションブランド。
+        </p>
+      </div>
+      <div>
+        <p class="footer-col-title">Collection</p>
+        <ul class="footer-links">
+          <li><a href="#">New Arrival</a></li>
+          <li><a href="#">Women</a></li>
+          <li><a href="#">Men</a></li>
+          <li><a href="#">Archive</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Brand</p>
+        <ul class="footer-links">
+          <li><a href="#">Story</a></li>
+          <li><a href="#">Philosophy</a></li>
+          <li><a href="#">Lookbook</a></li>
+          <li><a href="#">Store</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Newsletter</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Email address" />
+          <button type="button">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 MAISON KUROE. All rights reserved.</p>
+      <div class="footer-sns">
+        <a href="#">Instagram</a>
+        <a href="#">X</a>
+        <a href="#">Pinterest</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== チャットボット ===== -->
+
+  <!-- 起動ボタン（ピルシェイプ）-->
+  <button class="chat-btn" id="chatBtn" aria-label="ブランドコンシェルジュを開く">
+    <!-- チャットバブルアイコン -->
+    <span class="chat-btn-icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </span>
+    <!-- テキスト（通常状態）-->
+    <span class="chat-btn-text-wrap" aria-hidden="true">
+      <span class="chat-btn-label">Concierge</span>
+      <span class="chat-btn-sub">AI Chat</span>
+    </span>
+    <!-- 閉じる状態のテキスト -->
+    <span class="chat-btn-close-text" aria-hidden="true">Close</span>
+  </button>
+
+  <!-- チャットウィンドウ -->
+  <div class="chat-window" id="chatWindow" role="dialog" aria-label="MAISON KUROE Brand Concierge" aria-hidden="true">
+
+    <!-- ヘッダー -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <p class="chat-brand">MAISON KUROE</p>
+        <p class="chat-subtitle">Brand Concierge</p>
+      </div>
+      <button class="chat-header-close" id="chatHeaderClose" aria-label="チャットを閉じる"></button>
+    </div>
+
+    <!-- オンラインステータス -->
+    <div class="chat-status">
+      <span class="chat-status-dot"></span>
+      <span class="chat-status-text">Online</span>
+    </div>
+
+    <!-- メッセージリスト -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- 初期ウェルカムメッセージ -->
+      <div class="chat-msg chat-msg--ai">
+        <div class="chat-msg-bubble">
+          ようこそ、MAISON KUROE へ。<br>
+          コレクションやストアについてのご質問など、お気軽にどうぞ。
+        </div>
+      </div>
+    </div>
+
+    <!-- 入力エリア -->
+    <div class="chat-input-area">
+      <input
+        type="text"
+        class="chat-input"
+        id="chatInput"
+        placeholder="メッセージを入力..."
+        maxlength="500"
+        autocomplete="off"
+      />
+      <button class="chat-send" id="chatSend" aria-label="送信">
+        <!-- 送信アイコン（ペーパープレーン） -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+  <!-- ===== /チャットボット ===== -->
+
+  <script>
+    // スクロールでナビのスタイルを切り替え
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ハンバーガーメニューの開閉
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-label', 'メニューを開く');
+      });
+    });
+
+    // スクロールでフェードインアニメーション
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ルックブックのドラッグスクロール
+    const track = document.querySelector('.lookbook-track');
+    let isDragging = false, startX, scrollLeft;
+
+    track.addEventListener('mousedown', e => {
+      isDragging = true;
+      startX     = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+    track.addEventListener('mouseleave', () => isDragging = false);
+    track.addEventListener('mouseup',    () => isDragging = false);
+    track.addEventListener('mousemove',  e => {
+      if (!isDragging) return;
+      e.preventDefault();
+      track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX);
+    });
+
+    // ===== チャットボット =====
+
+    const chatBtn         = document.getElementById('chatBtn');
+    const chatWindow      = document.getElementById('chatWindow');
+    const chatHeaderClose = document.getElementById('chatHeaderClose');
+    const chatMessages    = document.getElementById('chatMessages');
+    const chatInput       = document.getElementById('chatInput');
+    const chatSend        = document.getElementById('chatSend');
+
+    // 会話履歴（Claude API に渡すメッセージ配列）
+    let messageHistory = [];
+    // ストリーミング中フラグ
+    let isStreaming = false;
+
+    // パルスアニメーション終了後にクラスを付与して停止
+    chatBtn.addEventListener('animationend', () => {
+      chatBtn.classList.add('pulse-done');
+    }, { once: true });
+
+    /** チャットウィンドウの開閉 */
+    function toggleChat() {
+      const willOpen = !chatWindow.classList.contains('is-open');
+      chatWindow.classList.toggle('is-open', willOpen);
+      chatWindow.setAttribute('aria-hidden', String(!willOpen));
+      chatBtn.classList.toggle('is-open', willOpen);
+      chatBtn.classList.add('pulse-done'); // 一度クリックしたらパルス停止
+      chatBtn.setAttribute('aria-label', willOpen ? 'コンシェルジュを閉じる' : 'ブランドコンシェルジュを開く');
+      if (willOpen) chatInput.focus();
+    }
+
+    chatBtn.addEventListener('click', toggleChat);
+    chatHeaderClose.addEventListener('click', toggleChat);
+
+    // ESC キーで閉じる
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && chatWindow.classList.contains('is-open')) toggleChat();
+    });
+
+    /** メッセージバブルを追加して最下部へスクロール */
+    function appendMessage(role, text) {
+      const wrap   = document.createElement('div');
+      wrap.className = `chat-msg chat-msg--${role}`;
+
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-msg-bubble';
+      bubble.textContent = text;
+
+      wrap.appendChild(bubble);
+      chatMessages.appendChild(wrap);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return bubble; // ストリーミング更新用に返す
+    }
+
+    /** タイピングインジケーターの追加・削除 */
+    function addTypingIndicator() {
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-msg chat-msg--ai';
+      wrap.id = 'chatTyping';
+
+      const indicator = document.createElement('div');
+      indicator.className = 'chat-typing';
+      indicator.innerHTML = '<span></span><span></span><span></span>';
+
+      wrap.appendChild(indicator);
+      chatMessages.appendChild(wrap);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('chatTyping');
+      if (el) el.remove();
+    }
+
+    /** メッセージ送信 */
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isStreaming) return;
+
+      // 入力欄をクリア
+      chatInput.value = '';
+      isStreaming = true;
+      chatSend.disabled = true;
+
+      // ユーザーメッセージを表示
+      appendMessage('user', text);
+
+      // 会話履歴に追加
+      messageHistory.push({ role: 'user', content: text });
+
+      // タイピングインジケーター表示
+      addTypingIndicator();
+
+      try {
+        // SSE ストリーミングリクエスト
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: messageHistory }),
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        // タイピングインジケーター削除 → AIバブルを追加
+        removeTypingIndicator();
+        const aiBubble = appendMessage('ai', '');
+
+        const reader  = response.body.getReader();
+        const decoder = new TextDecoder();
+        let aiText    = '';
+        let buffer    = '';
+
+        // SSE を逐次読み取り
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // 未完了行はバッファに残す
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const payload = line.slice(6).trim();
+            if (payload === '[DONE]') break;
+
+            try {
+              const parsed = JSON.parse(payload);
+              if (parsed.error) {
+                // エラーメッセージを品のある表示に整形
+                aiBubble.textContent = parsed.error;
+                aiBubble.style.fontStyle = 'italic';
+                aiBubble.style.opacity  = '0.75';
+                break;
+              }
+              if (parsed.text) {
+                aiText += parsed.text;
+                aiBubble.textContent = aiText;
+                // スクロールを最下部に追従
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+            } catch {
+              // JSON パース失敗は無視
+            }
+          }
+        }
+
+        // 会話履歴に AI 応答を追加
+        if (aiText) messageHistory.push({ role: 'assistant', content: aiText });
+
+      } catch (err) {
+        removeTypingIndicator();
+        appendMessage('ai', '申し訳ございません。一時的な問題が発生しております。しばらくしてから再度お試しください。');
+        console.error('チャットエラー:', err);
+      } finally {
+        isStreaming = false;
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    // 送信ボタンクリック
+    chatSend.addEventListener('click', sendMessage);
+
+    // Enter キーで送信（Shift+Enter は改行）
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>
