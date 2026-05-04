@@ -1,6 +1,6 @@
 /**
  * Vercel サーバーレス関数：チャットAPI
- * Claude Haiku を使ったストリーミング応答
+ * Claude Haiku を使った通常レスポンス（Vercel対応）
  */
 
 const Anthropic = require('@anthropic-ai/sdk');
@@ -82,6 +82,16 @@ A. 適切な管理体制のもとで取り扱い、外部に漏れることは�
 - 絵文字を適度に使って親しみやすい雰囲気を演出してください`;
 
 module.exports = async (req, res) => {
+  // CORSヘッダー
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // プリフライトリクエスト対応
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // POSTメソッド以外は拒否
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -98,36 +108,20 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'ANTHROPIC_API_KEY が設定されていません' });
   }
 
-  // SSE ヘッダーを設定
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // Nginxバッファリング無効
-  res.flushHeaders();
-
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   try {
-    // Claude API にストリーミングリクエストを送信
-    const stream = client.messages.stream({
+    // 通常レスポンス（非ストリーミング）
+    const response = await client.messages.create({
       model: 'claude-haiku-4-5',
       max_tokens: 512,
       system: SYSTEM_PROMPT,
       messages,
     });
 
-    // テキストデルタをSSEで順次送信
-    for await (const event of stream) {
-      if (
-        event.type === 'content_block_delta' &&
-        event.delta.type === 'text_delta'
-      ) {
-        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
-      }
-    }
+    const text = response.content[0].text;
+    return res.status(200).json({ text });
 
-    res.write('data: [DONE]\n\n');
-    res.end();
   } catch (error) {
     console.error('Claude API エラー:', error.message);
 
@@ -138,8 +132,6 @@ module.exports = async (req, res) => {
       userMsg = '⚠️ APIキーの設定に問題があります。管理者にお問い合わせください。';
     }
 
-    res.write(`data: ${JSON.stringify({ error: userMsg })}\n\n`);
-    res.write('data: [DONE]\n\n');
-    res.end();
+    return res.status(500).json({ error: userMsg });
   }
 };

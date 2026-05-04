@@ -3170,7 +3170,7 @@
       scrollChat();
     }
 
-    // ===== Claude API へリクエストを送り、ストリーミングで応答を表示 =====
+    // ===== Claude API へリクエストを送り、JSONで応答を表示 =====
     async function sendMessage(text) {
       if (!text.trim() || isStreaming) return;
 
@@ -3188,10 +3188,6 @@
       chatBody.appendChild(typing);
       scrollChat();
 
-      // ボットの応答バブルを先に生成（テキストをストリームで追記する）
-      let botBubble = null;
-      let fullResponse = '';
-
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -3199,66 +3195,33 @@
           body: JSON.stringify({ messages: messageHistory }),
         });
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
 
         // 入力中インジケーターを除去してバブルを生成
         typing.remove();
-        botBubble = document.createElement('div');
+        const botBubble = document.createElement('div');
         botBubble.className = 'chat-msg chat-msg--bot';
-        botBubble.innerHTML = '<div class="chat-msg__bubble"></div>';
         chatBody.appendChild(botBubble);
-        const bubble = botBubble.querySelector('.chat-msg__bubble');
 
-        // SSE ストリームを読み込む
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop(); // 未完了の行を次へ持ち越し
-
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) continue;
-            const data = line.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.error) {
-                bubble.textContent = parsed.error;
-              } else if (parsed.text) {
-                fullResponse += parsed.text;
-                // 改行を <br> に変換してHTMLとして設定
-                bubble.innerHTML = escapeHtml(fullResponse).replace(/\n/g, '<br>');
-                scrollChat();
-              }
-            } catch {
-              // JSON パースエラーは無視
-            }
-          }
+        if (data.error) {
+          botBubble.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(data.error)}</div>`;
+        } else {
+          const replyText = data.text || '';
+          botBubble.innerHTML = `<div class="chat-msg__bubble">${escapeHtml(replyText).replace(/\n/g, '<br>')}</div>`;
+          // 会話履歴にアシスタントの回答を追加
+          messageHistory.push({ role: 'assistant', content: replyText });
         }
 
-        // 会話履歴にアシスタントの回答を追加
-        if (fullResponse) {
-          messageHistory.push({ role: 'assistant', content: fullResponse });
-        }
+        scrollChat();
 
       } catch (error) {
         console.error('チャットエラー:', error);
         typing.remove();
-        if (!botBubble) {
-          botBubble = document.createElement('div');
-          botBubble.className = 'chat-msg chat-msg--bot';
-          botBubble.innerHTML = '<div class="chat-msg__bubble"></div>';
-          chatBody.appendChild(botBubble);
-        }
-        botBubble.querySelector('.chat-msg__bubble').textContent =
-          '⚠️ 通信エラーが発生しました。しばらくしてから再度お試しください。';
+        const errBubble = document.createElement('div');
+        errBubble.className = 'chat-msg chat-msg--bot';
+        errBubble.innerHTML = '<div class="chat-msg__bubble">⚠️ 通信エラーが発生しました。しばらくしてから再度お試しください。</div>';
+        chatBody.appendChild(errBubble);
+        scrollChat();
       } finally {
         isStreaming = false;
         setSendDisabled(false);
